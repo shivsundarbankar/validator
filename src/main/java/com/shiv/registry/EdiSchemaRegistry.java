@@ -10,9 +10,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.net.URL;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
 @Component
@@ -22,7 +22,7 @@ public class EdiSchemaRegistry {
     private final EdiSchemaProperties properties;
 
     // In-memory cache: "004010-850" → Schema object
-    private final Map<String, Schema> schemaCache = new HashMap<>();
+    private final Map<String, Schema> schemaCache = new ConcurrentHashMap<>();
 
     // ─────────────────────────────────────────────
     // Load ALL schemas at startup — fail fast
@@ -67,7 +67,7 @@ public class EdiSchemaRegistry {
     // List all registered schemas
     // ─────────────────────────────────────────────
     public Map<String, Boolean> getRegistryStatus() {
-        Map<String, Boolean> status = new HashMap<>();
+        Map<String, Boolean> status = new ConcurrentHashMap<>();
         properties.getSchemaRegistry().keySet().forEach(key -> status.put(key, schemaCache.containsKey(key)));
         return status;
     }

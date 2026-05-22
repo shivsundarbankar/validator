@@ -2,18 +2,20 @@ package com.shiv.service;
 
 import io.xlate.edi.stream.EDIInputFactory;
 import io.xlate.edi.stream.EDIStreamEvent;
+import io.xlate.edi.stream.EDIStreamException;
 import io.xlate.edi.stream.EDIStreamReader;
 import io.xlate.edi.stream.Location;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
 import java.io.InputStream;
 
 @Slf4j
 @Component
 public class EdiDocumentDetector {
 
-    public EdiDocumentInfo detect(InputStream ediStream) throws Exception {
+    public EdiDocumentInfo detect(InputStream ediStream) throws EDIStreamException, IOException {
         EDIInputFactory factory = EDIInputFactory.newFactory();
         EDIStreamReader reader = factory.createEDIStreamReader(ediStream);
 

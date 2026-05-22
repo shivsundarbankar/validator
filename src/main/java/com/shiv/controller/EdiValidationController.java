@@ -10,7 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.Map;
 
 @Slf4j
@@ -28,8 +27,9 @@ public class EdiValidationController {
      * No params needed — just upload the file
      */
     @PostMapping(value = "/validate", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<EdiValidationResponse> validateAuto(@RequestParam("file") MultipartFile file) throws IOException {
-        return ResponseEntity.ok(ediValidationService.validateAuto(file.getBytes()));
+    public ResponseEntity<EdiValidationResponse> validateAuto(@RequestParam("file") MultipartFile file) {
+        validateFileNotEmpty(file);
+        return ResponseEntity.ok(ediValidationService.validateAuto(readBytes(file)));
     }
 
     /**
@@ -37,9 +37,12 @@ public class EdiValidationController {
      * MANUAL mode — caller specifies version and transaction
      */
     @PostMapping(value = "/validate/manual", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<EdiValidationResponse> validateManual(@RequestParam("file") MultipartFile file, @RequestParam(value = "version", defaultValue = "004010") String version, @RequestParam(value = "transaction", defaultValue = "850") String transaction) throws IOException {
-        return ResponseEntity.ok(ediValidationService.validateManual(file.getBytes(), version, transaction));
-
+    public ResponseEntity<EdiValidationResponse> validateManual(
+            @RequestParam("file") MultipartFile file,
+            @RequestParam(value = "version", defaultValue = "004010") String version,
+            @RequestParam(value = "transaction", defaultValue = "850") String transaction) {
+        validateFileNotEmpty(file);
+        return ResponseEntity.ok(ediValidationService.validateManual(readBytes(file), version, transaction));
     }
 
     /**
@@ -47,8 +50,9 @@ public class EdiValidationController {
      * STRUCTURAL only — no schema, envelope check only
      */
     @PostMapping(value = "/validate/structure", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<EdiValidationResponse> validateStructure(@RequestParam("file") MultipartFile file) throws IOException {
-        return ResponseEntity.ok(ediValidationService.validateStructure(file.getBytes()));
+    public ResponseEntity<EdiValidationResponse> validateStructure(@RequestParam("file") MultipartFile file) {
+        validateFileNotEmpty(file);
+        return ResponseEntity.ok(ediValidationService.validateStructure(readBytes(file)));
     }
 
     /**
@@ -58,5 +62,20 @@ public class EdiValidationController {
     @GetMapping("/schemas")
     public ResponseEntity<Map<String, Boolean>> listSchemas() {
         return ResponseEntity.ok(schemaRegistry.getRegistryStatus());
+    }
+
+    private void validateFileNotEmpty(MultipartFile file) {
+        if (file == null || file.isEmpty()) {
+            throw new IllegalArgumentException("No file provided or file is empty. Please upload a valid EDI document.");
+        }
+    }
+
+    private byte[] readBytes(MultipartFile file) {
+        try {
+            return file.getBytes();
+        } catch (Exception e) {
+            log.error("Failed to read uploaded file: {}", e.getMessage(), e);
+            throw new IllegalArgumentException("Failed to read the uploaded file: " + e.getMessage());
+        }
     }
 }
