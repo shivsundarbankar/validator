@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://xlate.io/EDISchema/v4">
+
+    <include schemaLocation="common.xml"/>
+
+    <!-- Only 4010 specific -->
+</schema>

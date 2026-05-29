@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://xlate.io/EDISchema/v4">
+
+    <include schemaLocation="../segments/4010.xml"/>
+
+    <transaction>
+        <sequence>
+
+            <segment type="BEG" minOccurs="1" maxOccurs="1"/>
+            <segment type="CUR" minOccurs="0" maxOccurs="1"/>
+            <segment type="REF" minOccurs="0" maxOccurs="12"/>
+            <segment type="PER" minOccurs="0" maxOccurs="5"/>
+            <segment type="FOB" minOccurs="0" maxOccurs="1"/>
+            <segment type="CSH" minOccurs="0" maxOccurs="1"/>
+            <segment type="ITD" minOccurs="0" maxOccurs="5"/>
+            <segment type="DTM" minOccurs="0" maxOccurs="10"/>
+
+            <!-- Loop 1000 - Party Name -->
+            <loop code="1000" minOccurs="0" maxOccurs="200">
+                <sequence>
+                    <segment type="N1" minOccurs="1" maxOccurs="1"/>
+                    <segment type="N3" minOccurs="0" maxOccurs="2"/>
+                    <segment type="N4" minOccurs="0" maxOccurs="1"/>
+                    <segment type="REF" minOccurs="0" maxOccurs="12"/>
+                    <segment type="PER" minOccurs="0" maxOccurs="3"/>
+                </sequence>
+            </loop>
+
+            <!-- Loop 2000 - Line Items -->
+            <loop code="2000" minOccurs="1" maxOccurs="10000">
+                <sequence>
+                    <segment type="PO1" minOccurs="1" maxOccurs="1"/>
+                    <segment type="PID" minOccurs="0" maxOccurs="1000"/>
+                    <segment type="PO4" minOccurs="0" maxOccurs="25"/>
+                    <segment type="REF" minOccurs="0" maxOccurs="12"/>
+                    <segment type="SAC" minOccurs="0" maxOccurs="25"/>
+                    <segment type="DTM" minOccurs="0" maxOccurs="10"/>
+                </sequence>
+            </loop>
+
+            <segment type="CTT" minOccurs="1" maxOccurs="1"/>
+            <segment type="AMT" minOccurs="0" maxOccurs="1"/>
+
+        </sequence>
+    </transaction>
+
+
+</schema>

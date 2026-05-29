@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://xlate.io/EDISchema/v4">
+
+    <elementType name="E0353" base="identifier" minLength="2" maxLength="2" /> <!-- Transaction Set Purpose Code -->
+    <elementType name="E0092" base="identifier" minLength="2" maxLength="2" /> <!-- Purchase Order Type Code -->
+    <elementType name="E0324" base="string" minLength="1" maxLength="22" /> <!-- Purchase Order Number -->
+    <elementType name="E0328" base="string" minLength="1" maxLength="30" /> <!-- Release Number -->
+    <elementType name="E0373" base="date" minLength="8" maxLength="8" /> <!-- Date -->
+    <elementType name="E0367" base="string" minLength="1" maxLength="30" /> <!-- Contract Number -->
+    <elementType name="E0587" base="identifier" minLength="2" maxLength="2" /> <!-- Acknowledgment Type -->
+    <elementType name="E1019" base="identifier" minLength="3" maxLength="3" /> <!-- Invoice Type Code -->
+    <elementType name="E1166" base="identifier" minLength="2" maxLength="2" /> <!-- Contract Type Code -->
+    <elementType name="E1232" base="identifier" minLength="2" maxLength="2" /> <!-- Purchase Category -->
+    <elementType name="E0786" base="identifier" minLength="2" maxLength="2" /> <!-- Security Level Code -->
+    <elementType name="E0640" base="identifier" minLength="2" maxLength="2" /> <!-- Transaction Type Code -->
+    <elementType name="E0098" base="identifier" minLength="2" maxLength="3" /> <!-- Entity Identifier Code -->
+    <elementType name="E0100" base="identifier" minLength="3" maxLength="3" /> <!-- Currency Code -->
+    <elementType name="E0280" base="decimal" minLength="4" maxLength="10" /> <!-- Exchange Code -->
+    <elementType name="E0669" base="identifier" minLength="3" maxLength="3" /> <!-- Currency Market / Exchange Code -->
+    <elementType name="E0374" base="date" minLength="3" maxLength="3" /> <!-- Date/Time Qualifier -->
+    <elementType name="E0337" base="time" minLength="4" maxLength="8" /> <!-- Time -->
+    <elementType name="E0128" base="identifier" minLength="2" maxLength="3" /> <!-- Reference Identification Qualifier -->
+    <elementType name="E0127" base="string" minLength="1" maxLength="30" /> <!-- Reference Identification -->
+    <elementType name="E0352" base="string" minLength="1" maxLength="80" /> <!-- Description -->
+    <elementType name="E0366" base="identifier" minLength="2" maxLength="2" /> <!-- Contact Function Code -->
+    <elementType name="E0093" base="string" minLength="1" maxLength="60" /> <!-- Name -->
+    <elementType name="E0365" base="identifier" minLength="2" maxLength="2" /> <!-- Communication Number Qualifier -->
+    <elementType name="E0364" base="string" minLength="1" maxLength="80" /> <!-- Communication Number -->
+    <elementType name="E0443" base="string" minLength="1" maxLength="20" /> <!-- Contact Inquiry Reference -->
+    <elementType name="E0146" base="identifier" minLength="2" maxLength="2" /> <!-- Shipment Method of Payment -->
+    <elementType name="E0309" base="identifier" minLength="1" maxLength="2" /> <!-- Location Qualifier -->
+    <elementType name="E0334" base="identifier" minLength="2" maxLength="2" /> <!-- Transportation Terms Qualifier Code -->
+    <elementType name="E0335" base="identifier" minLength="3" maxLength="3" /> <!-- Transportation Terms Code -->
+    <elementType name="E0054" base="identifier" minLength="2" maxLength="2" /> <!-- Risk of Loss Code -->
+    <elementType name="E0563" base="identifier" minLength="1" maxLength="2" /> <!-- Sales Requirement Code -->
+    <elementType name="E0306" base="identifier" minLength="1" maxLength="2" /> <!-- Action Code -->
+    <elementType name="E0610" base="numeric" minLength="1" maxLength="15" /> <!-- Amount -->
+    <elementType name="E0508" base="string" minLength="1" maxLength="35" /> <!-- Account Number -->
+    <elementType name="E0559" base="identifier" minLength="2" maxLength="2" /> <!-- Agency Qualifier Code -->
+    <elementType name="E0560" base="identifier" minLength="2" maxLength="10" /> <!-- Special Services Code -->
+    <elementType name="E0566" base="identifier" minLength="1" maxLength="2" /> <!-- Product/Service Substitution Code -->
+    <elementType name="E0954" base="decimal" minLength="1" maxLength="10" /> <!-- Percent -->
+    <elementType name="E1004" base="identifier" minLength="1" maxLength="2" /> <!-- Percent Qualifier -->
+    <elementType name="E0336" base="identifier" minLength="2" maxLength="2" /> <!-- Terms Type Code -->
+    <elementType name="E0333" base="identifier" minLength="1" maxLength="2" /> <!-- Terms Basis Date Code-->
+    <elementType name="E0338" base="decimal" minLength="1" maxLength="6" /> <!-- Terms Discount Percent-->
+    <elementType name="E0370" base="date" minLength="8" maxLength="8" /> <!-- Terms Discount Due Date-->
+    <elementType name="E0351" base="numeric" minLength="1" maxLength="3" /> <!-- Terms Discount Days Due-->
+    <elementType name="E0446" base="date" minLength="8" maxLength="8" /> <!-- Terms Net Due Date-->
+    <elementType name="E0386" base="numeric" minLength="1" maxLength="3" /> <!-- Terms Net Days-->
+    <elementType name="E0362" base="numeric" minLength="1" maxLength="10" /> <!-- Terms Discount Amount-->
+    <elementType name="E0388" base="date" minLength="8" maxLength="8" /> <!-- Terms Deferred Due Date-->
+    <elementType name="E0389" base="numeric" minLength="1" maxLength="10" /> <!-- Deferred Amount Due-->
+    <elementType name="E0342" base="decimal" minLength="1" maxLength="5" /> <!-- Percent of Invoice Payable-->
+    <elementType name="E0765" base="numeric" minLength="1" maxLength="2" /> <!-- Day of Month-->
+    <elementType name="E0107" base="identifier" minLength="1" maxLength="2" /> <!-- Payment Method Code-->
+    <elementType name="E0623" base="identifier" minLength="2" maxLength="2" /> <!-- Time Code-->
+    <elementType name="E1250" base="identifier" minLength="2" maxLength="3" /> <!-- Date Time Period Format Qualifier-->
+    <elementType name="E1251" base="string" minLength="1" maxLength="35" /> <!-- Date Time Period-->
+    <elementType name="E0066" base="identifier" minLength="1" maxLength="2" /> <!-- Identification Code Qualifier-->
+    <elementType name="E0067" base="string" minLength="2" maxLength="80" /> <!--  Identification Code-->
+    <elementType name="E0706" base="identifier" minLength="2" maxLength="2" /> <!--  Entity Relationship Code-->
+    <elementType name="E0166" base="string" minLength="1" maxLength="55" /> <!--  Address Information-->
+    <elementType name="E0019" base="string" minLength="2" maxLength="30" /> <!--  City Name -->
+    <elementType name="E0156" base="identifier" minLength="2" maxLength="2" /> <!--  State or Province Code -->
+    <elementType name="E0116" base="identifier" minLength="3" maxLength="15" /> <!--  Postal Code -->
+    <elementType name="E0026" base="identifier" minLength="2" maxLength="3" /> <!--  Country Code -->
+    <elementType name="E0310" base="string" minLength="1" maxLength="30" /> <!--  Location Qualifier -->
+    <elementType name="E0350" base="string" minLength="1" maxLength="20" /> <!--  Assigned Identification -->
+    <elementType name="E0330" base="decimal" minLength="1" maxLength="15" /> <!--  Quality Ordered -->
+    <elementType name="E0355" base="identifier" minLength="2" maxLength="2" /> <!--  Unit or Basis for Measurement Code -->
+    <elementType name="E0212" base="decimal" minLength="1" maxLength="17" /> <!--  Unit Price -->
+    <elementType name="E0639" base="identifier" minLength="2" maxLength="2" /> <!--  Basis of Unit Price Code -->
+    <elementType name="E0235" base="identifier" minLength="2" maxLength="2" /> <!--  Product/Service ID Qualifier -->
+    <elementType name="E0234" base="string" minLength="1" maxLength="48" /> <!--  Product/Service ID -->
+    <elementType name="E0349" base="identifier" minLength="1" maxLength="1" /> <!--  Item Description Type -->
+    <elementType name="E0750" base="identifier" minLength="2" maxLength="3" /> <!--  Product/Process Characteristic code -->
+    <elementType name="E0751" base="string" minLength="1" maxLength="12" /> <!--  Product Description code -->
+    <elementType name="E0752" base="identifier" minLength="2" maxLength="2" /> <!--  Surface/Layer/Position Code -->
+    <elementType name="E0822" base="string" minLength="1" maxLength="15" /> <!--  Source Subqualifier -->
+    <elementType name="E1073" base="identifier" minLength="1" maxLength="1" /> <!--  Yes/No Condition or Response Code -->
+    <elementType name="E0819" base="identifier" minLength="2" maxLength="3" /> <!--  Language Code -->
+    <elementType name="E0356" base="numeric" minLength="1" maxLength="6" /> <!--  Pack -->
+    <elementType name="E0357" base="decimal" minLength="1" maxLength="8" /> <!--  Size -->
+    <elementType name="E0103" base="string" minLength="3" maxLength="5" /> <!--  Packaging Code -->
+    <elementType name="E0187" base="identifier" minLength="1" maxLength="2" /> <!--  Weight Qualifier -->
+    <elementType name="E0384" base="decimal" minLength="1" maxLength="9" /> <!--  Gross Weight per pack  -->
+    <elementType name="E0385" base="decimal" minLength="1" maxLength="9" /> <!--  Gross Volume per Pack  -->
+    <elementType name="E0082" base="decimal" minLength="1" maxLength="8" /> <!--  Length  -->
+    <elementType name="E0189" base="decimal" minLength="1" maxLength="8" /> <!--  Width  -->
+    <elementType name="E0065" base="decimal" minLength="1" maxLength="8" /> <!--  Height  -->
+    <elementType name="E0810" base="numeric" minLength="1" maxLength="6" /> <!--  Inner Pack  -->
+    <elementType name="E1470" base="numeric" minLength="1" maxLength="9" /> <!--  Number  -->
+    <elementType name="E0248" base="identifier" minLength="1" maxLength="1" /> <!--  Allowance or Change Indicator  -->
+    <elementType name="E1300" base="identifier" minLength="4" maxLength="4" /> <!--  Service, Promotion, Allowance or Charge Code  -->
+    <elementType name="E1301" base="string" minLength="1" maxLength="10" /> <!--  Agency Service, Promotion, Allowance, or Charge Code  -->
+    <elementType name="E0378" base="identifier" minLength="1" maxLength="1" /> <!--  Allowance/Charge Percent Qualifier  -->
+    <elementType name="E0332" base="decimal" minLength="1" maxLength="6" /> <!--  Percent  -->
+    <elementType name="E0118" base="decimal" minLength="1" maxLength="9" /> <!--  Rate  -->
+    <elementType name="E0380" base="decimal" minLength="1" maxLength="15" /> <!--  Quantity  -->
+    <elementType name="E0331" base="identifier" minLength="2" maxLength="2" /> <!--  Allowance or Charge Method of Handling Code  -->
+    <elementType name="E0770" base="string" minLength="1" maxLength="20" /> <!--  Option Number  -->
+    <elementType name="E0354" base="numeric" minLength="1" maxLength="6" /> <!--  Number of Line Items  -->
+    <elementType name="E0347" base="decimal" minLength="1" maxLength="10" /> <!--  Hash Total -->
+    <elementType name="E0081" base="decimal" minLength="1" maxLength="10" /> <!--  Weight -->
+    <elementType name="E0183" base="decimal" minLength="1" maxLength="8" /> <!--  Volume -->
+</schema>

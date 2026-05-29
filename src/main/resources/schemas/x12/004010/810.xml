@@ -33,15 +33,15 @@
                     <segment type="IT1" minOccurs="1" maxOccurs="1" />
                     <segment type="CUR" minOccurs="0" maxOccurs="1" />
                     <segment type="IT3" minOccurs="0" maxOccurs="5" />
-                    <segment type="TXI" minOccurs="0" maxOccurs="10" />
-                    <segment type="REF" minOccurs="0" maxOccurs="16" />
-                    <segment type="DTM" minOccurs="0" maxOccurs="10" />
-
                     <loop code="2100" minOccurs="0" maxOccurs="1000">
                         <sequence>
                             <segment type="PID" minOccurs="1" maxOccurs="1" />
                         </sequence>
                     </loop>
+                    <segment type="REF" minOccurs="0" maxOccurs="16" />
+                    <segment type="DTM" minOccurs="0" maxOccurs="10" />
+                    <segment type="TXI" minOccurs="0" maxOccurs="10" />
+
 
                     <loop code="2200" minOccurs="0" maxOccurs="25">
                         <sequence>
