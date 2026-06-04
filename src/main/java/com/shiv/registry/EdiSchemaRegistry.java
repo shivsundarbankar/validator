@@ -24,14 +24,14 @@ public class EdiSchemaRegistry {
     // In-memory cache: "004010-850" → Schema object
     private final Map<String, Schema> schemaCache = new ConcurrentHashMap<>();
 
-    // ─────────────────────────────────────────────
     // Load ALL schemas at startup — fail fast
-    // ─────────────────────────────────────────────
     @PostConstruct
     public void loadAllSchemas() {
         log.info("Loading EDI schema registry — {} entries configured", properties.getSchemaRegistry().size());
 
         SchemaFactory factory = SchemaFactory.newFactory();
+
+
 
         properties.getSchemaRegistry().forEach((key, path) -> {
             try {
@@ -40,7 +40,13 @@ public class EdiSchemaRegistry {
                     log.warn("Schema not found for key [{}] at path: {}", key, path);
                     return;
                 }
+                //set base URL for resolving includes
+                factory.setProperty(
+                        SchemaFactory.SCHEMA_LOCATION_URL_CONTEXT,
+                        url
+                );
                 Schema schema = factory.createSchema(url);
+
                 schemaCache.put(key, schema);
                 log.info("Loaded schema [{}] from {}", key, path);
 

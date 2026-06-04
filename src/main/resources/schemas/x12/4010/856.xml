@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://xlate.io/EDISchema/v4">
+
+    <include schemaLocation="856-segments.xml"/>
+
+    <transaction>
+        <sequence>
+
+            <!-- Header -->
+            <segment type="BSN" minOccurs="1" maxOccurs="1"/>
+            <segment type="DTM" minOccurs="0" maxOccurs="10"/>
+
+            <!-- HL Loop -->
+            <loop code="2000" minOccurs="1" maxOccurs="200000">
+                <sequence>
+
+
+                    <segment type="HL" minOccurs="1" maxOccurs="1"/>
+                    <segment type="LIN" minOccurs="0" maxOccurs="1"/>
+                    <segment type="SN1" minOccurs="0" maxOccurs="1"/>
+                    <segment type="SLN" minOccurs="0" maxOccurs="1000"/>
+                    <segment type="PRF" minOccurs="0" maxOccurs="1"/>
+                    <segment type="PO4" minOccurs="0" maxOccurs="1"/>
+                    <segment type="PID" minOccurs="0" maxOccurs="200"/>
+                    <segment type="MEA" minOccurs="0" maxOccurs="40"/>
+                    <segment type="PWK" minOccurs="0" maxOccurs="25"/>
+                    <segment type="PKG" minOccurs="0" maxOccurs="25"/>
+                    <segment type="TD1" minOccurs="0" maxOccurs="20"/>
+                    <segment type="TD5" minOccurs="0" maxOccurs="12"/>
+                    <segment type="TD3" minOccurs="0" maxOccurs="12"/>
+                    <segment type="TD4" minOccurs="0" maxOccurs="5"/>
+                    <segment type="TSD" minOccurs="0" maxOccurs="1"/>
+                    <segment type="REF" minOccurs="0" maxOccurs="12"/>
+                    <segment type="PER" minOccurs="0" maxOccurs="12"/>
+
+                    <!-- LH1 Loop (Hazardous) -->
+                    <loop code="2300" minOccurs="0" maxOccurs="25">
+                        <sequence>
+                            <segment type="LH1" minOccurs="1" maxOccurs="1"/>
+                            <segment type="LH2" minOccurs="0" maxOccurs="10"/>
+                            <segment type="LH3" minOccurs="0" maxOccurs="10"/>
+                            <segment type="LFH" minOccurs="0" maxOccurs="1"/>
+                            <segment type="LEP" minOccurs="0" maxOccurs="10"/>
+                            <segment type="LH4" minOccurs="0" maxOccurs="1"/>
+                            <segment type="LHT" minOccurs="0" maxOccurs="3"/>
+                            <segment type="LHR" minOccurs="0" maxOccurs="10"/>
+                            <segment type="PER" minOccurs="0" maxOccurs="5"/>
+                            <segment type="LHE" minOccurs="0" maxOccurs="1"/>
+                        </sequence>
+                    </loop>
+
+                    <!-- CLD Loop (Container Load) -->
+                    <loop code="CLD_LOOP" minOccurs="0" maxOccurs="50">
+                        <sequence>
+                            <segment type="CLD" minOccurs="1" maxOccurs="1"/>
+                            <segment type="REF" minOccurs="0" maxOccurs="200"/>
+                            <segment type="DTP" minOccurs="0" maxOccurs="1"/>
+                        </sequence>
+                    </loop>
+
+                    <segment type="MAN" minOccurs="0" maxOccurs="10"/>
+                    <segment type="DTM" minOccurs="0" maxOccurs="10"/>
+                    <segment type="FOB" minOccurs="0" maxOccurs="1"/>
+                    <segment type="PAL" minOccurs="0" maxOccurs="1"/>
+
+                    <!-- N1 Loop (Party Info inside HL) -->
+                    <loop code="1000" minOccurs="0" maxOccurs="200">
+                        <sequence>
+                            <segment type="N1" minOccurs="1" maxOccurs="1"/>
+                            <segment type="N2" minOccurs="0" maxOccurs="2"/>
+                            <segment type="N3" minOccurs="0" maxOccurs="2"/>
+                            <segment type="N4" minOccurs="0" maxOccurs="1"/>
+                            <segment type="REF" minOccurs="0" maxOccurs="12"/>
+                            <segment type="PER" minOccurs="0" maxOccurs="3"/>
+                            <segment type="FOB" minOccurs="0" maxOccurs="1"/>
+                        </sequence>
+                    </loop>
+
+                    <segment type="SDQ" minOccurs="0" maxOccurs="50"/>
+                    <segment type="ETD" minOccurs="0" maxOccurs="1"/>
+                    <segment type="CUR" minOccurs="0" maxOccurs="1"/>
+
+                    <!-- SAC Loop (Code Source Info) -->
+                    <loop code="SAC_LOOP" minOccurs="0" maxOccurs="10">
+                        <sequence>
+                            <segment type="SAC" minOccurs="1" maxOccurs="1"/>
+                            <segment type="CUR" minOccurs="0" maxOccurs="1"/>
+                        </sequence>
+                    </loop>
+
+                    <segment type="GF" minOccurs="0" maxOccurs="1"/>
+                    <segment type="YNQ" minOccurs="0" maxOccurs="10"/>
+
+                    <!-- LM Loop (Code Source Info) -->
+                    <loop code="LM_LOOP" minOccurs="0" maxOccurs="10">
+                        <sequence>
+                            <segment type="LM" minOccurs="1" maxOccurs="1"/>
+                            <segment type="LQ" minOccurs="1" maxOccurs="100"/>
+                        </sequence>
+                    </loop>
+
+                    <!-- V1 Loop (Ocean Shipment Details) -->
+                    <loop code="2500" minOccurs="0" maxOccurs="1">
+                        <sequence>
+                            <segment type="V1" minOccurs="1" maxOccurs="1"/>
+                            <segment type="R4" minOccurs="0" maxOccurs="1"/>
+                            <segment type="DTM" minOccurs="0" maxOccurs="1"/>
+                        </sequence>
+                    </loop>
+
+                </sequence>
+            </loop>
+
+            <!-- Summary -->
+            <segment type="CTT" minOccurs="0" maxOccurs="1"/>
+
+        </sequence>
+    </transaction>
+
+</schema>

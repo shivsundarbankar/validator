@@ -1,0 +1,676 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://xlate.io/EDISchema/v4">
+
+    <include schemaLocation="common-elements.xml"/>
+
+
+    <segmentType name="BSN">
+        <sequence>
+            <element type="E0353" minOccurs="1"/><!-- BSN01: Transaction Set Purpose Code -->
+            <element type="E0396" minOccurs="1"/><!-- BSN02: Shipment Identification -->
+            <element type="E0373" minOccurs="1"/><!-- BSN03: Date -->
+            <element type="E0337" minOccurs="1"/><!-- BSN04: Time -->
+            <element type="E1005" minOccurs="0"/><!-- BSN05: Hierarchical Structure Code -->
+            <element type="E0640" minOccurs="0"/><!-- BSN06: Transaction Type Code -->
+            <element type="E0641" minOccurs="0"/><!-- BSN07: Status Reason Code | If BSN07 is present, the BSN06 is required -->
+        </sequence>
+    </segmentType>
+
+    <segmentType name="DTM">
+        <sequence>
+            <element type="E0374" minOccurs="1"/> <!-- DTM01: Date/Time Qualifier -->
+            <element type="E0373" minOccurs="0"/> <!-- DTM02: Date -->
+            <element type="E0337" minOccurs="0"/> <!-- DTM03: Time -->
+            <element type="E0623" minOccurs="0"/> <!-- DTM04: Time Code -->
+            <element type="E1250" minOccurs="0"/> <!-- DTM05: Date Time Period Format Qualifier -->
+            <element type="E1251" minOccurs="0"/> <!-- DTM06: Date Time Period -->
+        </sequence>
+    </segmentType>
+
+    <segmentType name="HL">
+        <sequence>
+            <element type="E0628" minOccurs="1"/> <!-- HL01: Hierarchical ID Number -->
+            <element type="E0734" minOccurs="0"/> <!-- HL02: Hierarchical Parent ID Number -->
+            <element type="E0735" minOccurs="1"/> <!-- HL03: Hierarchical Level Code -->
+            <element type="E0736" minOccurs="0"/> <!-- HL04: Hierarchical Child Code -->
+        </sequence>
+    </segmentType>
+
+    <segmentType name="LIN">
+        <sequence>
+            <element type="E0350" minOccurs="0"/> <!-- LIN01: Assigned Identification -->
+            <element type="E0235" minOccurs="1"/> <!-- LIN02: Product/Service ID Qualifier -->
+            <element type="E0234" minOccurs="1"/> <!-- LIN03: Product/Service ID -->
+            <element type="E0235" minOccurs="0"/> <!-- LIN04: Product/Service ID Qualifier -->
+            <element type="E0234" minOccurs="0"/> <!-- LIN05: Product/Service ID -->
+            <element type="E0235" minOccurs="0"/> <!-- LIN06: Product/Service ID Qualifier -->
+            <element type="E0234" minOccurs="0"/> <!-- LIN07: Product/Service ID -->
+            <element type="E0235" minOccurs="0"/> <!-- LIN08: Product/Service ID Qualifier -->
+            <element type="E0234" minOccurs="0"/> <!-- LIN09: Product/Service ID -->
+            <element type="E0235" minOccurs="0"/> <!-- LIN10: Product/Service ID Qualifier -->
+            <element type="E0234" minOccurs="0"/> <!-- LIN11: Product/Service ID -->
+            <element type="E0235" minOccurs="0"/> <!-- LIN12: Product/Service ID Qualifier -->
+            <element type="E0234" minOccurs="0"/> <!-- LIN13: Product/Service ID -->
+            <element type="E0235" minOccurs="0"/> <!-- LIN14: Product/Service ID Qualifier -->
+            <element type="E0234" minOccurs="0"/> <!-- LIN15: Product/Service ID -->
+            <element type="E0235" minOccurs="0"/> <!-- LIN16: Product/Service ID Qualifier -->
+            <element type="E0234" minOccurs="0"/> <!-- LIN17: Product/Service ID -->
+            <element type="E0235" minOccurs="0"/> <!-- LIN18: Product/Service ID Qualifier -->
+            <element type="E0234" minOccurs="0"/> <!-- LIN19: Product/Service ID -->
+            <element type="E0235" minOccurs="0"/> <!-- LIN20: Product/Service ID Qualifier -->
+            <element type="E0234" minOccurs="0"/> <!-- LIN21: Product/Service ID -->
+            <element type="E0235" minOccurs="0"/> <!-- LIN22: Product/Service ID Qualifier -->
+            <element type="E0234" minOccurs="0"/> <!-- LIN23: Product/Service ID -->
+            <element type="E0235" minOccurs="0"/> <!-- LIN24: Product/Service ID Qualifier -->
+            <element type="E0234" minOccurs="0"/> <!-- LIN25: Product/Service ID -->
+            <element type="E0235" minOccurs="0"/> <!-- LIN26: Product/Service ID Qualifier -->
+            <element type="E0234" minOccurs="0"/> <!-- LIN27: Product/Service ID -->
+            <element type="E0235" minOccurs="0"/> <!-- LIN28: Product/Service ID Qualifier -->
+            <element type="E0234" minOccurs="0"/> <!-- LIN29: Product/Service ID -->
+            <element type="E0235" minOccurs="0"/> <!-- LIN30: Product/Service ID Qualifier -->
+            <element type="E0234" minOccurs="0"/> <!-- LIN31: Product/Service ID -->
+        </sequence>
+    </segmentType>
+
+    <segmentType name="SN1">
+        <sequence>
+            <element type="E0350" minOccurs="0"/> <!-- SN101: Assigned Identification -->
+            <element type="E0382" minOccurs="1"/> <!-- SN102: Number of Units Shipped -->
+            <element type="E0355" minOccurs="1"/> <!-- SN103: Unit of Basis for Measurement code -->
+            <element type="E0646" minOccurs="0"/> <!-- SN104: Quantity Shipped to Date -->
+            <element type="E0330" minOccurs="0"/> <!-- SN105: Quantity Ordered -->
+            <element type="E0355" minOccurs="0"/> <!-- SN106: Unit of Basis for Measurement code -->
+            <element type="E0728" minOccurs="0"/> <!-- SN107: Returnable Container Load Make-up Code -->
+            <element type="E0668" minOccurs="0"/> <!-- SN108: Line Item Status Code-->
+        </sequence>
+    </segmentType>
+
+    <segmentType name="SLN">
+        <sequence>
+            <element type="E0350" minOccurs="1"/> <!-- SLN01: Assigned Identification -->
+            <element type="E0350" minOccurs="0"/> <!-- SLN02: Assigned Identification -->
+            <element type="E0662" minOccurs="1"/> <!-- SLN03: Relationship Code -->
+            <element type="E0380" minOccurs="0"/> <!-- SLN04: Quantity -->
+            <composite type="C001" minOccurs="0"/> <!-- SLN05: Composite Unit of Measure -->
+            <element type="E0212" minOccurs="0"/> <!-- SLN06: Unit price -->
+            <element type="E0639" minOccurs="0"/> <!-- SLN07: Basis of Unit Price Code -->
+            <element type="E0662" minOccurs="0"/> <!-- SLN08: Relationship Code -->
+            <element type="E0235" minOccurs="0"/> <!-- SLN09: Product/Service ID Qualifier -->
+            <element type="E0234" minOccurs="0"/> <!-- SLN10: Product/Service ID -->
+            <element type="E0235" minOccurs="0"/> <!-- SLN11: Product/Service ID Qualifier -->
+            <element type="E0234" minOccurs="0"/> <!-- SLN12: Product/Service ID -->
+            <element type="E0235" minOccurs="0"/> <!-- SLN13: Product/Service ID Qualifier -->
+            <element type="E0234" minOccurs="0"/> <!-- SLN14: Product/Service ID -->
+            <element type="E0235" minOccurs="0"/> <!-- SLN15: Product/Service ID Qualifier -->
+            <element type="E0234" minOccurs="0"/> <!-- SLN16: Product/Service ID -->
+            <element type="E0235" minOccurs="0"/> <!-- SLN17: Product/Service ID Qualifier -->
+            <element type="E0234" minOccurs="0"/> <!-- SLN18: Product/Service ID -->
+            <element type="E0235" minOccurs="0"/> <!-- SLN19: Product/Service ID Qualifier -->
+            <element type="E0234" minOccurs="0"/> <!-- SLN20: Product/Service ID -->
+            <element type="E0235" minOccurs="0"/> <!-- SLN21: Product/Service ID Qualifier -->
+            <element type="E0234" minOccurs="0"/> <!-- SLN22: Product/Service ID -->
+            <element type="E0235" minOccurs="0"/> <!-- SLN23: Product/Service ID Qualifier -->
+            <element type="E0234" minOccurs="0"/> <!-- SLN24: Product/Service ID -->
+            <element type="E0235" minOccurs="0"/> <!-- SLN25: Product/Service ID Qualifier -->
+            <element type="E0234" minOccurs="0"/> <!-- SLN26: Product/Service ID -->
+            <element type="E0235" minOccurs="0"/> <!-- SLN27: Product/Service ID Qualifier -->
+            <element type="E0234" minOccurs="0"/> <!-- SLN28: Product/Service ID -->
+        </sequence>
+    </segmentType>
+
+    <segmentType name="PRF">
+        <sequence>
+            <element type="E0324" minOccurs="1"/> <!-- PRF01: Purchase Order Number -->
+            <element type="E0328" minOccurs="0"/> <!-- PRF02: Release Number -->
+            <element type="E0327" minOccurs="0"/> <!-- PRF03: Change Order Sequence Number -->
+            <element type="E0373" minOccurs="0"/> <!-- PRF04: Date -->
+            <element type="E0350" minOccurs="0"/> <!-- PRF05: Assigned Identification -->
+            <element type="E0367" minOccurs="0"/> <!-- PRF06: Contract Number -->
+            <element type="E0092" minOccurs="0"/> <!-- PRF07: Purchase Order Type Code -->
+        </sequence>
+    </segmentType>
+
+    <segmentType name="PO4">
+        <sequence>
+            <element type="E0356" minOccurs="0"/><!-- PO401: Pack -->
+            <element type="E0357" minOccurs="0"/><!-- PO402: Size -->
+            <element type="E0355" minOccurs="0"/><!-- PO403: Unit or Basis for Measurement Code -->
+            <element type="E0103" minOccurs="0"/><!-- PO404: Packaging Code -->
+            <element type="E0187" minOccurs="0"/><!-- PO405: Weight Qualifier -->
+            <element type="E0384" minOccurs="0"/><!-- PO406: Gross Weight per Pack -->
+            <element type="E0355" minOccurs="0"/><!-- PO407: Unit or Basis for Measurement Code -->
+            <element type="E0385" minOccurs="0"/><!-- PO408: Gross Volume per Pack -->
+            <element type="E0355" minOccurs="0"/><!-- PO409: Unit or Basis for Measurement Code -->
+            <element type="E0082" minOccurs="0"/><!-- PO410: Length -->
+            <element type="E0189" minOccurs="0"/><!-- PO411: Width -->
+            <element type="E0065" minOccurs="0"/><!-- PO412: Height -->
+            <element type="E0355" minOccurs="0"/><!-- PO413: Unit or Basis for Measurement Code -->
+            <element type="E0810" minOccurs="0"/><!-- PO414: Inner Pack -->
+            <element type="E0752" minOccurs="0"/><!-- PO415: Surface/Layer/Position Code -->
+            <element type="E0350" minOccurs="0"/><!-- PO416: Assigned Identification -->
+            <element type="E0350" minOccurs="0"/><!-- PO417: Assigned Identification -->
+            <element type="E1470" minOccurs="0"/><!-- PO418: Number -->
+        </sequence>
+    </segmentType>
+
+    <segmentType name="PID">
+        <sequence>
+            <element type="E0349" minOccurs="1"/><!-- PID01: Item Description Type -->
+            <element type="E0750" minOccurs="0"/><!-- PID02: Product/Process Characteristic Code -->
+            <element type="E0559" minOccurs="0"/><!-- PID03: Agency Qualifier Code -->
+            <element type="E0751" minOccurs="0"/><!-- PID04: Product Description Code -->
+            <element type="E0352" minOccurs="0"/><!-- PID05: Description -->
+            <element type="E0752" minOccurs="0"/><!-- PID06: Surface/Layer/Position Code -->
+            <element type="E0822" minOccurs="0"/><!-- PID07: Source Subqualifier  -->
+            <element type="E1073" minOccurs="0"/><!-- PID08: Yes/No Condition or Response Code -->
+            <element type="E0819" minOccurs="0"/><!-- PID09: Language Code -->
+        </sequence>
+    </segmentType>
+
+
+    <segmentType name="MEA">
+        <sequence>
+            <element type="E0737" minOccurs="0"/><!-- MEA01: Measurement Reference ID Code -->
+            <element type="E0738" minOccurs="0"/><!-- MEA02: Measurement Qualifier -->
+            <element type="E0739" minOccurs="0"/><!-- MEA03: Measurement Value -->
+            <composite type="C001" minOccurs="0"/> <!-- MEA04: Composite Unit of Measure -->
+            <element type="E0740" minOccurs="0"/><!-- MEA05: Range Minimum -->
+            <element type="E0741" minOccurs="0"/><!-- MEA06: Range Maximum -->
+            <element type="E0935" minOccurs="0"/><!-- MEA07: Measurement Significance Code -->
+            <element type="E0936" minOccurs="0"/><!-- MEA08: Measurement Attribute Code -->
+            <element type="E0752" minOccurs="0"/><!-- MEA09: Surface/Layer/Position Code -->
+            <element type="E1373" minOccurs="0"/><!-- MEA10: Measurement Method or Device-->
+        </sequence>
+    </segmentType>
+
+
+    <segmentType name="PWK">
+        <sequence>
+            <element type="E0755" minOccurs="1"/><!-- PWK01: Report Type Code -->
+            <element type="E0756" minOccurs="0"/><!-- PWK02: Report Transmission Code -->
+            <element type="E0757" minOccurs="0"/><!-- PWK03: Report Copies Needed -->
+            <element type="E0098" minOccurs="0"/><!-- PWK04: Entity Identifier Code -->
+            <element type="E0066" minOccurs="0"/><!-- PWK05: Identification Code Qualifier -->
+            <element type="E0067" minOccurs="0"/><!-- PWK06: Identification Code -->
+            <element type="E0352" minOccurs="0"/><!-- PWK07: Description -->
+            <composite type="C002" minOccurs="0"/> <!-- PWK08: Actions Indicated -->
+            <element type="E1525" minOccurs="0"/><!-- PWK09: Request Category Code -->
+        </sequence>
+    </segmentType>
+
+    <segmentType name="PKG">
+        <sequence>
+            <element type="E0349" minOccurs="0"/><!-- PKG01: Item Description Type -->
+            <element type="E0753" minOccurs="0"/><!-- PKG02: Packaging Characteristic Code -->
+            <element type="E0559" minOccurs="0"/><!-- PKG03: Agency Qualifier Code-->
+            <element type="E0754" minOccurs="0"/><!-- PKG04: Packaging Description Code -->
+            <element type="E0352" minOccurs="0"/><!-- PKG05: Description -->
+            <element type="E0400" minOccurs="0"/><!-- PKG06: Unit Load Option Code -->
+        </sequence>
+    </segmentType>
+
+    <segmentType name="TD1">
+        <sequence>
+            <element type="E0103" minOccurs="0"/><!-- TD101: Packaging Code -->
+            <element type="E0080" minOccurs="0"/><!-- TD102: Lading Quantity -->
+            <element type="E0023" minOccurs="0"/><!-- TD103: Commodity Code Qualifier -->
+            <element type="E0022" minOccurs="0"/><!-- TD104: Commodity Code -->
+            <element type="E0079" minOccurs="0"/><!-- TD105: Landing Description -->
+            <element type="E0187" minOccurs="0"/><!-- TD106: Weight Qualifier -->
+            <element type="E0081" minOccurs="0"/><!-- TD107: Weight  -->
+            <element type="E0355" minOccurs="0"/><!-- TD108: Unit of Basis for Measurement Code  -->
+            <element type="E0183" minOccurs="0"/><!-- TD109: Volume -->
+            <element type="E0355" minOccurs="0"/><!-- TD110: Unit or Basis for Measurement Code -->
+        </sequence>
+    </segmentType>
+
+
+    <segmentType name="TD5">
+        <sequence>
+            <element type="E0133" minOccurs="0"/><!-- TD501: Routing Sequence Code -->
+            <element type="E0066" minOccurs="0"/><!-- TD502: Identification Code Qualifier -->
+            <element type="E0067" minOccurs="0"/><!-- TD503: Identification Code -->
+            <element type="E0091" minOccurs="0"/><!-- TD504: Transportation Method/Type Code -->
+            <element type="E0387" minOccurs="0"/><!-- TD505: Routing -->
+            <element type="E0368" minOccurs="0"/><!-- TD506: Shipment/Order Status Code -->
+            <element type="E0309" minOccurs="0"/><!-- TD507: Location Qualifier -->
+            <element type="E0310" minOccurs="0"/><!-- TD508: Location Identifier -->
+            <element type="E0731" minOccurs="0"/><!-- TD509: Transit Direction Code-->
+            <element type="E0732" minOccurs="0"/><!-- TD510: Transit Time Direction Qualifier -->
+            <element type="E0733" minOccurs="0"/><!-- TD511: Transit Time -->
+            <element type="E0284" minOccurs="0"/><!-- TD512: Service Level Code -->
+            <element type="E0284" minOccurs="0"/><!-- TD513: Service Level Code -->
+            <element type="E0284" minOccurs="0"/><!-- TD514: Service Level Code -->
+            <element type="E0026" minOccurs="0"/><!-- TD515: Country Code -->
+        </sequence>
+    </segmentType>
+
+    <segmentType name="TD3">
+        <sequence>
+            <element type="E0040" minOccurs="0"/><!-- TD301: Equipment Description Code-->
+            <element type="E0206" minOccurs="0"/><!-- TD302: Equipment Initial-->
+            <element type="E0207" minOccurs="0"/><!-- TD303: Equipment Number-->
+            <element type="E0187" minOccurs="0"/><!-- TD304: Weight Qualifier-->
+            <element type="E0081" minOccurs="0"/><!-- TD305: Weight-->
+            <element type="E0355" minOccurs="0"/><!-- TD306: Unit or Basis for Measurement Code-->
+            <element type="E0102" minOccurs="0"/><!-- TD307: Ownership Code-->
+            <element type="E0407" minOccurs="0"/><!-- TD308: Seal Status Code-->
+            <element type="E0225" minOccurs="0"/><!-- TD309: Seal Number-->
+            <element type="E0024" minOccurs="0"/><!-- TD3010: Equipment Type-->
+        </sequence>
+    </segmentType>
+
+    <segmentType name="TD4">
+        <sequence>
+            <element type="E0152" minOccurs="0"/><!-- TD401: Special Handling Code-->
+            <element type="E0208" minOccurs="0"/><!-- TD402: Hazardous Material Code Qualifier-->
+            <element type="E0209" minOccurs="0"/><!-- TD403: Hazardous Material Class Code-->
+            <element type="E0352" minOccurs="0"/><!-- TD404: Description-->
+            <element type="E1073" minOccurs="0"/><!-- TD405: Yes/No Condition or Response Code-->
+        </sequence>
+    </segmentType>
+
+    <segmentType name="TSD">
+        <sequence>
+            <element type="E0350" minOccurs="0"/><!-- TSD01: Special Handling Code-->
+            <element type="E0219" minOccurs="0"/><!-- TSD02: Position-->
+        </sequence>
+    </segmentType>
+
+    <segmentType name="REF">
+        <sequence>
+            <element type="E0128" minOccurs="1"/> <!-- REF01: Reference Identification Qualifier -->
+            <element type="E0127" minOccurs="0"/><!-- REF02: Reference Identification Conditional - At least one of REF02 or REF03 is required -->
+            <element type="E0352" minOccurs="0"/><!-- REF03: Description Conditional - At least one of REF02 or REF03 is required -->
+            <composite type="C040" minOccurs="0"/><!-- REF03: Description Conditional - At least one of REF02 or REF03 is required -->
+        </sequence>
+    </segmentType>
+
+    <segmentType name="PER">
+        <sequence>
+            <element type="E0366" minOccurs="1"/><!-- PER01: Contact Function Code -->
+            <element type="E0093" minOccurs="0"/><!-- PER02: Name -->
+            <element type="E0365" minOccurs="0"/><!-- PER03: Communication Number Qualifier -->
+            <element type="E0364" minOccurs="0"/><!-- PER04: Communication Number -->
+            <element type="E0365" minOccurs="0"/><!-- PER05 -->
+            <element type="E0364" minOccurs="0"/><!-- PER06 -->
+            <element type="E0365" minOccurs="0"/> <!-- PER07 -->
+            <element type="E0364" minOccurs="0"/> <!-- PER08 -->
+            <element type="E0443" minOccurs="0"/><!-- PER09: Contact Inquiry Reference -->
+        </sequence>
+    </segmentType>
+
+    <segmentType name="LH1">
+        <sequence>
+            <element type="E0355" minOccurs="1"/><!-- LH101: Unit or Basis for Measurement Code -->
+            <element type="E0080" minOccurs="1"/><!-- LH102: Lading Quantity -->
+            <element type="E0277" minOccurs="0"/><!-- LH103: UN/NA Identification Code-->
+            <element type="E0200" minOccurs="0"/><!-- LH104: Hazardous Materials Page-->
+            <element type="E0022" minOccurs="0"/><!-- LH105: Commodity Code-->
+            <element type="E0355" minOccurs="0"/><!-- LH106: Unit or Basis for Measurement Code-->
+            <element type="E0380" minOccurs="0"/><!-- LH107: Quantity-->
+            <element type="E0595" minOccurs="0"/><!-- LH108: Compartment ID Code-->
+            <element type="E0665" minOccurs="0"/><!-- LH109: Residue Indicator Code-->
+            <element type="E0254" minOccurs="0"/><!-- LH110: Packing Group Code-->
+            <element type="E1375" minOccurs="0"/><!-- LH111: Interim Hazardous Material Regulatory Number-->
+        </sequence>
+    </segmentType>
+
+    <segmentType name="LH2">
+        <sequence>
+            <element type="E0215" minOccurs="0"/><!-- LH201: Hazardous Classification -->
+            <element type="E0983" minOccurs="0"/><!-- LH202: Hazardous Class Qualifier -->
+            <element type="E0218" minOccurs="0"/><!-- LH203: Hazardous Placard Notation -->
+            <element type="E0222" minOccurs="0"/><!-- LH204: Hazardous Endorsement -->
+            <element type="E0759" minOccurs="0"/><!-- LH205: Reportable Quantity Code-->
+            <element type="E0355" minOccurs="0"/><!-- LH206: Unit or Basis for Measurement Code-->
+            <element type="E0408" minOccurs="0"/><!-- LH207: Temperature-->
+            <element type="E0355" minOccurs="0"/><!-- LH208: Unit or Basis for Measurement Code-->
+            <element type="E0408" minOccurs="0"/><!-- LH209: Temperature-->
+            <element type="E0355" minOccurs="0"/><!-- LH2010: Unit or Basis for Measurement Code-->
+            <element type="E0408" minOccurs="0"/><!-- LH211: Temperature-->
+        </sequence>
+    </segmentType>
+
+    <segmentType name="LH3">
+        <sequence>
+            <element type="E0224" minOccurs="0"/><!-- LH301: Hazardous Material Shipping Name -->
+            <element type="E0984" minOccurs="0"/><!-- LH302: Hazardous Material Shipping Name Qualifier -->
+            <element type="E0985" minOccurs="0"/><!-- LH303: N.O.S. Indicator Code -->
+            <element type="E1073" minOccurs="0"/><!-- LH304: Yes/No Condition or Response Code -->
+        </sequence>
+    </segmentType>
+
+    <segmentType name="LFH">
+        <sequence>
+            <element type="E0808" minOccurs="1"/><!-- LFH01: Hazardous Material Shipment Information Qualifier -->
+            <element type="E0809" minOccurs="1"/><!-- LFH02: Hazardous Material Shipment Information -->
+            <element type="E0809" minOccurs="0"/><!-- LFH03: Hazardous Material Shipment Information -->
+            <element type="E1023" minOccurs="0"/><!-- LFH04: Hazard Zone Code -->
+            <element type="E0355" minOccurs="0"/><!-- LH205: Unit or Basis for Measurement Code-->
+            <element type="E0380" minOccurs="0"/><!-- LH206: Quantity-->
+            <element type="E0380" minOccurs="0"/><!-- LH207: Quantity-->
+        </sequence>
+    </segmentType>
+
+    <segmentType name="LEP">
+        <sequence>
+            <element type="E0806" minOccurs="0"/><!-- LEP01: EPA Waste Stream Number Code -->
+            <element type="E0807" minOccurs="0"/><!-- LEP02: Waste Characteristics Code -->
+            <element type="E0156" minOccurs="0"/><!-- LEP03: State or Province Code -->
+            <element type="E0127" minOccurs="0"/><!-- LEP04: Reference Identification -->
+        </sequence>
+    </segmentType>
+
+    <segmentType name="LH4">
+        <sequence>
+            <element type="E0238" minOccurs="0"/><!-- LH401: Emergency Response Plan Number -->
+            <element type="E0364" minOccurs="0"/><!-- LH402: Communication Number -->
+            <element type="E0254" minOccurs="0"/><!-- LH403: Packing Group code -->
+            <element type="E0230" minOccurs="0"/><!-- LH404: Subsidiary Classification -->
+            <element type="E0230" minOccurs="0"/><!-- LH405: Subsidiary Classification -->
+            <element type="E0230" minOccurs="0"/><!-- LH406: Subsidiary Classification -->
+            <element type="E0271" minOccurs="0"/><!-- LH407: Subsidiary Risk Indicator -->
+            <element type="E0267" minOccurs="0"/><!-- LH408: Net Explosive Quantity -->
+            <element type="E0805" minOccurs="0"/><!-- LH409: Canadian Hazardous Natation -->
+            <element type="E0986" minOccurs="0"/><!-- LH410: Canadian Hazardous Natation -->
+            <element type="E0364" minOccurs="0"/><!-- LH411: Canadian Hazardous Natation -->
+            <element type="E0355" minOccurs="0"/><!-- LH412: Canadian Hazardous Natation -->
+        </sequence>
+    </segmentType>
+
+    <segmentType name="LHT">
+        <sequence>
+            <element type="E0215" minOccurs="0"/><!-- LHT01: Hazardous Classification -->
+            <element type="E0218" minOccurs="0"/><!-- LHT02: Hazardous Placard Notation -->
+            <element type="E0222" minOccurs="0"/><!-- LHT03: Hazardous Endorsement-->
+        </sequence>
+    </segmentType>
+
+    <segmentType name="LHR">
+        <sequence>
+            <element type="E0128" minOccurs="1"/><!-- LHR01: Reference Identification Qualifier -->
+            <element type="E0127" minOccurs="1"/><!-- LHR02: Reference Identification-->
+            <element type="E0373" minOccurs="0"/><!-- LHR03: Date-->
+        </sequence>
+    </segmentType>
+
+    <segmentType name="LHE">
+        <sequence>
+            <element type="E0224" minOccurs="1"/><!-- LHE01: Hazardous Material Shipping Name -->
+            <element type="E0218" minOccurs="1"/><!-- LHE02: Hazardous Placard Notation-->
+            <element type="E0128" minOccurs="1"/><!-- LHE03: Reference Identification Qualifier -->
+            <element type="E0127" minOccurs="1"/><!-- LHE04: Reference Identification-->
+            <element type="E0759" minOccurs="0"/><!-- LHE05: Reportable Quantity Code-->
+        </sequence>
+    </segmentType>
+
+
+    <segmentType name="CLD">
+        <sequence>
+            <element type="E0622" minOccurs="1"/><!-- CLD01: Number of Loads -->
+            <element type="E0382" minOccurs="1"/> <!-- CLD02: Number of Units Shipped -->
+            <element type="E0103" minOccurs="0"/><!-- CLD03: Packaging Code -->
+            <element type="E0357" minOccurs="0"/><!-- CLD04: Size -->
+            <element type="E0355" minOccurs="0"/> <!-- CLD05: Unit of Basis for Measurement code -->
+        </sequence>
+    </segmentType>
+
+    <segmentType name="DTP">
+        <sequence>
+            <element type="E0374" minOccurs="1"/> <!-- DTP01: Date/Time Qualifier -->
+            <element type="E1250" minOccurs="1"/> <!-- DTP02: Date Time Period Format Qualifier -->
+            <element type="E1251" minOccurs="1"/> <!-- DTP03: Date Time Period -->
+        </sequence>
+    </segmentType>
+
+    <segmentType name="MAN">
+        <sequence>
+            <element type="E0088" minOccurs="1"/> <!-- MAN01: Marks and Numbers Qualifier -->
+            <element type="E0087" minOccurs="1"/> <!-- MAN02: Marks and Numbers -->
+            <element type="E0087" minOccurs="0"/> <!-- MAN03: Marks and Numbers -->
+            <element type="E0088" minOccurs="0"/> <!-- MAN04: Marks and Numbers Qualifier -->
+            <element type="E0087" minOccurs="0"/> <!-- MAN05: Marks and Numbers -->
+            <element type="E0087" minOccurs="0"/> <!-- MAN06: Marks and Numbers -->
+        </sequence>
+    </segmentType>
+
+    <segmentType name="FOB">
+        <sequence>
+            <element type="E0146" minOccurs="1"/> <!-- FOB01: Shipment Method of Payment -->
+            <element type="E0309" minOccurs="0"/><!-- FOB02: Location Qualifier -->
+            <element type="E0352" minOccurs="0"/> <!-- FOB03: Description -->
+            <element type="E0334" minOccurs="0"/><!-- FOB04: Transportation Terms Qualifier Code -->
+            <element type="E0335" minOccurs="0"/>  <!-- FOB05: Transportation Terms Code -->
+            <element type="E0309" minOccurs="0"/> <!-- FOB06: Location Qualifier -->
+            <element type="E0352" minOccurs="0"/>   <!-- FOB07: Description -->
+            <element type="E0054" minOccurs="0"/><!-- FOB08: Risk of Loss Code -->
+            <element type="E0352" minOccurs="0"/>   <!-- FOB09: Description -->
+        </sequence>
+    </segmentType>
+
+    <segmentType name="PAL">
+        <sequence>
+            <element type="E0883" minOccurs="0"/> <!-- PAL01: Pallet Type Code-->
+            <element type="E0884" minOccurs="0"/> <!-- PAL02: Pallet Tiers -->
+            <element type="E0885" minOccurs="0"/> <!-- PAL03: Pallet Blocks -->
+            <element type="E0356" minOccurs="0"/> <!-- PAL04: Pallet Blocks -->
+            <element type="E0395" minOccurs="0"/> <!-- PAL05: Unit Weight -->
+            <element type="E0355" minOccurs="0"/> <!-- PAL06: Unit of Basis for Measurement code -->
+            <element type="E0082" minOccurs="0"/><!-- PAL07: Length -->
+            <element type="E0189" minOccurs="0"/><!-- PAL08: Width -->
+            <element type="E0065" minOccurs="0"/><!-- PAL09: Height -->
+            <element type="E0355" minOccurs="0"/> <!-- PAL10: Unit of Basis for Measurement code -->
+            <element type="E0384" minOccurs="0"/><!-- PAL11: Gross Weight per Pack -->
+            <element type="E0355" minOccurs="0"/> <!-- PAL12: Unit of Basis for Measurement code -->
+            <element type="E0385" minOccurs="0"/><!-- PAL13: Gross Volume per Pack -->
+            <element type="E0355" minOccurs="0"/> <!-- PAL14: Unit of Basis for Measurement code -->
+            <element type="E0399" minOccurs="0"/> <!-- PAL15: Pallet Exchange Code -->
+            <element type="E0810" minOccurs="0"/><!-- PAL16: Inner Pack -->
+        </sequence>
+    </segmentType>
+
+    <segmentType name="N1">
+        <sequence>
+            <element type="E0098" minOccurs="1"/><!-- N101: Entity Identifier Code -->
+            <element type="E0093" minOccurs="0"/><!-- N102: Name -->
+            <element type="E0066" minOccurs="0"/><!-- N103: Identification Code Qualifier -->
+            <element type="E0067" minOccurs="0"/><!-- N104: Identification Code -->
+            <element type="E0706" minOccurs="0"/><!-- N105: Entity Relationship code -->
+            <element type="E0098" minOccurs="0"/><!-- N106: Entity Identifier Code -->
+        </sequence>
+    </segmentType>
+
+    <segmentType name="N2">
+        <sequence>
+            <element type="E0093" minOccurs="1"/><!-- N201: Name-->
+            <element type="E0093" minOccurs="0"/><!-- N202: Name -->
+        </sequence>
+    </segmentType>
+
+    <segmentType name="N3">
+        <sequence>
+            <element type="E0166" minOccurs="1"/><!-- N301: Address Information -->
+            <element type="E0166" minOccurs="0"/><!-- N302: Address Information -->
+        </sequence>
+    </segmentType>
+
+    <segmentType name="N4">
+        <sequence>
+            <element type="E0019" minOccurs="0"/><!-- N401: City Name -->
+            <element type="E0156" minOccurs="0"/><!-- N402: State or Province Code -->
+            <element type="E0116" minOccurs="0"/><!-- N403: Postal Code -->
+            <element type="E0026" minOccurs="0"/><!-- N404: Country Code -->
+            <element type="E0309" minOccurs="0"/><!-- N405: Location Qualifier -->
+            <element type="E0310" minOccurs="0"/><!-- N406: Location Identifier-->
+        </sequence>
+    </segmentType>
+
+    <segmentType name="SDQ">
+        <sequence>
+            <element type="E0355" minOccurs="1"/> <!-- SDQ01: Unit of Basis for Measurement code -->
+            <element type="E0066" minOccurs="0"/><!-- SDQ02: Identification Code Qualifier -->
+            <element type="E0067" minOccurs="1"/><!-- SDQ03: Identification Code -->
+            <element type="E0380" minOccurs="1"/><!-- SDQ04: Quantity-->
+            <element type="E0067" minOccurs="0"/><!-- SDQ05: Identification Code -->
+            <element type="E0380" minOccurs="0"/><!-- SDQ06: Quantity-->
+            <element type="E0067" minOccurs="0"/><!-- SDQ07: Identification Code -->
+            <element type="E0380" minOccurs="0"/><!-- SDQ08: Quantity-->
+            <element type="E0067" minOccurs="0"/><!-- SDQ09: Identification Code -->
+            <element type="E0380" minOccurs="0"/><!-- SDQ10: Quantity-->
+            <element type="E0067" minOccurs="0"/><!-- SDQ11: Identification Code -->
+            <element type="E0380" minOccurs="0"/><!-- SDQ12: Quantity-->
+            <element type="E0067" minOccurs="0"/><!-- SDQ13: Identification Code -->
+            <element type="E0380" minOccurs="0"/><!-- SDQ14: Quantity-->
+            <element type="E0067" minOccurs="0"/><!-- SDQ15: Identification Code -->
+            <element type="E0380" minOccurs="0"/><!-- SDQ16: Quantity-->
+            <element type="E0067" minOccurs="0"/><!-- SDQ17: Identification Code -->
+            <element type="E0380" minOccurs="0"/><!-- SDQ18: Quantity-->
+            <element type="E0067" minOccurs="0"/><!-- SDQ19: Identification Code -->
+            <element type="E0380" minOccurs="0"/><!-- SDQ20: Quantity-->
+            <element type="E0067" minOccurs="0"/><!-- SDQ21: Identification Code -->
+            <element type="E0380" minOccurs="0"/><!-- SDQ22: Quantity-->
+            <element type="E0310" minOccurs="0"/><!-- SDQ23: Location Identifier -->
+        </sequence>
+    </segmentType>
+
+    <segmentType name="ETD">
+        <sequence>
+            <element type="E0626" minOccurs="1"/><!-- ETD01: Excess Transportation Reason -->
+            <element type="E0627" minOccurs="1"/><!-- ETD02: Excess Transportation Responsibility Identifier Code -->
+            <element type="E0128" minOccurs="0"/><!-- ETD03: Reference Identification Qualifier -->
+            <element type="E0127" minOccurs="0"/><!-- ETD04: Reference Identification -->
+            <element type="E0743" minOccurs="0"/><!-- ETD05: Returnable Container Freight Payment Responsibility Code -->
+        </sequence>
+    </segmentType>
+
+    <segmentType name="CUR">
+        <sequence>
+            <element type="E0098" minOccurs="1"/><!-- CUR01: Entity Identifier Code -->
+            <element type="E0100" minOccurs="1"/><!-- CUR02: Currency Code -->
+            <element type="E0280" minOccurs="0"/><!-- CUR03: Exchange Rate | Optional -->
+            <element type="E0098" minOccurs="0"/><!-- CUR04: Entity Identifier Code | Optional -->
+            <element type="E0100" minOccurs="0"/><!-- CUR05: Currency Code | Optional -->
+            <element type="E0669" minOccurs="0"/> <!-- CUR06: Currency Market / Exchange Code -->
+            <element type="E0374" minOccurs="0"/> <!-- CUR07: Date/Time Qualifier - Conditional (required if CUR08 or CUR09 present) -->
+            <element type="E0373" minOccurs="0"/> <!-- CUR08: Date Optional - if CUR08 is present, then CUR07 is required -->
+            <element type="E0337" minOccurs="0"/> <!-- CUR09: Time | Optional - if CUR09 is present, then CUR07 is required -->
+            <element type="E0374" minOccurs="0"/> <!-- CUR10: Date/Time Qualifier - Conditional (required if CUR11 or CUR12 present) -->
+            <element type="E0373" minOccurs="0"/> <!-- CUR11: Date Optional - if CUR11 is present, then CUR10 is required -->
+            <element type="E0337" minOccurs="0"/> <!-- CUR12: Time | Optional - if CUR12 is present, then CUR10 is required -->
+            <element type="E0374" minOccurs="0"/> <!-- CUR13: Date/Time Qualifier - Conditional (required if CUR14 or CUR15 present) -->
+            <element type="E0373" minOccurs="0"/> <!-- CUR14: Date Optional - if CUR14 is present, then CUR13 is required -->
+            <element type="E0337" minOccurs="0"/> <!-- CUR15: Time | Optional - if CUR15 is present, then CUR13 is required -->
+            <element type="E0374" minOccurs="0"/> <!-- CUR16: Date/Time Qualifier - Conditional (required if CUR17 or CUR18 present) -->
+            <element type="E0373" minOccurs="0"/> <!-- CUR17: Date Optional - if CUR17 is present, then CUR16 is required -->
+            <element type="E0337" minOccurs="0"/> <!-- CUR18: Time | Optional - if CUR18 is present, then CUR16 is required -->
+            <element type="E0374" minOccurs="0"/> <!-- CUR19: Date/Time Qualifier - Conditional (required if CUR20 or CUR21 present) -->
+            <element type="E0373" minOccurs="0"/> <!-- CUR20: Date Optional - if CUR20 is present, then CUR19 is required -->
+            <element type="E0337" minOccurs="0"/> <!-- CUR21: Time | Optional - if CUR21 is present, then CUR19 is required -->
+        </sequence>
+    </segmentType>
+
+    <segmentType name="SAC">
+        <sequence>
+            <element type="E0248" minOccurs="1"/><!-- SAC01: Allowance or Charge Indicator -->
+            <element type="E1300" minOccurs="0"/><!-- SAC02: Service, Promotion, Allowance or Charge Code -->
+            <element type="E0559" minOccurs="0"/><!-- SAC03: Agency Qualifier Code -->
+            <element type="E1301" minOccurs="0"/><!-- SAC04: Agency Service, Promotion, Allowance Code -->
+            <element type="E0610" minOccurs="0"/><!-- SAC05: Amount -->
+            <element type="E0378" minOccurs="0"/><!-- SAC06: Allowance/Charge Percent Qualifier -->
+            <element type="E0332" minOccurs="0"/><!-- SAC07: Percent, Decimal Format -->
+            <element type="E0118" minOccurs="0"/><!-- SAC08: Rate -->
+            <element type="E0355" minOccurs="0"/><!-- SAC09: Unit of Basis for Measurement Code -->
+            <element type="E0380" minOccurs="0"/><!-- SAC10: Quantity -->
+            <element type="E0380" minOccurs="0"/><!-- SAC11: Quantity -->
+            <element type="E0331" minOccurs="0"/><!-- SAC12: Allowance or Change Method of Handling Code -->
+            <element type="E0127" minOccurs="0"/><!-- SAC13: Reference Identification -->
+            <element type="E0770" minOccurs="0"/><!-- SAC14: Option Number -->
+            <element type="E0352" minOccurs="0"/><!-- SAC15: Description -->
+            <element type="E0819" minOccurs="0"/><!-- SAC16: Language Code -->
+        </sequence>
+    </segmentType>
+
+    <segmentType name="GF">
+        <sequence>
+            <element type="E0128" minOccurs="0"/> <!-- GF01: Reference Identification Qualifier -->
+            <element type="E0127" minOccurs="0"/><!-- GF02: Reference Identification -->
+            <element type="E0367" minOccurs="0"/> <!-- GF03: Contract Number -->
+            <element type="E0782" minOccurs="0"/> <!-- GF04: Monetary Amount -->
+            <element type="E0128" minOccurs="0"/> <!-- GF05: Reference Identification Qualifier -->
+            <element type="E0127" minOccurs="0"/><!-- GF06: Reference Identification -->
+            <element type="E0328" minOccurs="0"/> <!-- GF07: Release Number -->
+            <element type="E0128" minOccurs="0"/> <!-- GF08: Reference Identification Qualifier -->
+            <element type="E0127" minOccurs="0"/><!-- GF09: Reference Identification -->
+        </sequence>
+    </segmentType>
+
+    <segmentType name="YNQ">
+        <sequence>
+            <element type="E1321" minOccurs="0"/> <!-- YNQ01: Condition Indicator-->
+            <element type="E1073" minOccurs="1"/><!-- YNQ02: Yes/No Condition or Response Code -->
+            <element type="E1250" minOccurs="0"/> <!-- YNQ03: Date Time Period Format Qualifier -->
+            <element type="E1251" minOccurs="0"/> <!-- YNQ04: Date Time Period -->
+            <element type="E0933" minOccurs="0"/> <!-- YNQ05: Free-Form Message Text-->
+            <element type="E0933" minOccurs="0"/> <!-- YNQ06: Free-Form Message Text -->
+            <element type="E0933" minOccurs="0"/> <!-- YNQ07: Free-Form Message Text-->
+            <element type="E1270" minOccurs="0"/> <!-- YNQ08: Code List Qualifier Code-->
+            <element type="E1271" minOccurs="0"/> <!-- YNQ09: Industry Code-->
+            <element type="E0933" minOccurs="0"/> <!-- YNQ10: Free-Form Message Text-->
+        </sequence>
+    </segmentType>
+
+    <segmentType name="LM">
+        <sequence>
+            <element type="E0559" minOccurs="0"/><!-- LM01: Agency Qualifier Code -->
+            <element type="E0822" minOccurs="0"/><!-- LM02: Source Subqualifer -->
+        </sequence>
+    </segmentType>
+
+    <segmentType name="LQ">
+        <sequence>
+            <element type="E1270" minOccurs="0"/> <!-- LQ01: Code List Qualifier Code-->
+            <element type="E1271" minOccurs="0"/> <!-- LQ02: Industry Code-->
+        </sequence>
+    </segmentType>
+
+    <segmentType name="V1">
+        <sequence>
+            <element type="E0597" minOccurs="0"/> <!-- V101: Vessel Code-->
+            <element type="E0182" minOccurs="0"/> <!-- V102: Vessel Name-->
+            <element type="E0026" minOccurs="0"/><!-- V103: Country Code -->
+            <element type="E0055" minOccurs="0"/><!-- V104: Flight/Voyage Number -->
+            <element type="E0140" minOccurs="0"/><!-- V105: Standard Carrier Alpha Code -->
+            <element type="E0249" minOccurs="0"/><!-- V106: Vessel Requirement Code -->
+            <element type="E0854" minOccurs="0"/><!-- V107: Vessel Type code -->
+            <element type="E0897" minOccurs="0"/><!-- V108: Vessel Code Qualifier -->
+            <element type="E0091" minOccurs="0"/><!-- V109: Transportation Method/Type Code -->
+        </sequence>
+    </segmentType>
+
+    <segmentType name="R4">
+        <sequence>
+            <element type="E0115" minOccurs="1"/> <!-- R401: Port or Terminal Function Code-->
+            <element type="E0309" minOccurs="0"/><!-- R402: Location Qualifier -->
+            <element type="E0310" minOccurs="0"/><!-- R403: Location Identifier -->
+            <element type="E0114" minOccurs="0"/><!-- R404: Port Name -->
+            <element type="E0026" minOccurs="0"/><!-- R405: Country Code -->
+            <element type="E0174" minOccurs="0"/><!-- R406: Terminal Name -->
+            <element type="E0113" minOccurs="0"/><!-- R407: Pier Number -->
+            <element type="E0156" minOccurs="0"/><!-- R408: State or Province Code-->
+        </sequence>
+    </segmentType>
+
+    <segmentType name="CTT">
+        <sequence>
+            <element type="E0354" minOccurs="1"/><!-- CTT01: Number of Line Items -->
+            <element type="E0347" minOccurs="0"/><!-- CTT02: Hash Total -->
+            <element type="E0081" minOccurs="0"/><!-- CTT03: Weight -->
+            <element type="E0355" minOccurs="0"/><!-- CTT04: Unit or Basis for Measurement Code -->
+            <element type="E0183" minOccurs="0"/><!-- CTT05: Volume -->
+            <element type="E0355" minOccurs="0"/><!-- CTT06: Unit or Basis for Measurement Code -->
+            <element type="E0352" minOccurs="0"/><!-- CTT07: Description -->
+        </sequence>
+    </segmentType>
+
+</schema>

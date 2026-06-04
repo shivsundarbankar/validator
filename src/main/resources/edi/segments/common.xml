@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<schema xmlns="http://xlate.io/EDISchema/v4">
-
-    <include schemaLocation="../elements/4010.xml"/>
-
-
-
-</schema>

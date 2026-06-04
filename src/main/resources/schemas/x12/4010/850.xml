@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <schema xmlns="http://xlate.io/EDISchema/v4">
 
-    <include schemaLocation="../segments/4010.xml"/>
+    <include schemaLocation="850-segments.xml"/>
 
     <transaction>
         <sequence>
@@ -39,7 +39,6 @@
             </loop>
 
             <segment type="CTT" minOccurs="1" maxOccurs="1"/>
-            <segment type="AMT" minOccurs="0" maxOccurs="1"/>
 
         </sequence>
     </transaction>

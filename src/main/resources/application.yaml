@@ -17,13 +17,13 @@ spring:
 edi:
   schema-registry:
     # format: "{version}-{transaction}": "classpath path"
-    "004010-850": "schemas/x12/004010/850.xml"
-    "004010-810": "schemas/x12/004010/810.xml"
-    "004010-856": "schemas/x12/004010/856.xml"
-    "004010-997": "schemas/x12/004010/997.xml"
-    "005010-837": "schemas/x12/005010/837.xml"
-    "005010-835": "schemas/x12/005010/835.xml"
-    "005010-270": "schemas/x12/005010/270.xml"
-    "005010-271": "schemas/x12/005010/271.xml"
+    "004010-850": "schemas/x12/4010/850.xml"
+    "004010-810": "schemas/x12/4010/810.xml"
+    "004010-856": "schemas/x12/4010/856.xml"
+    "004010-997": "schemas/x12/4010/997.xml"
+    "005010-837": "schemas/x12/5010/837.xml"
+    "005010-835": "schemas/x12/5010/835.xml"
+    "005010-270": "schemas/x12/5010/270.xml"
+    "005010-271": "schemas/x12/5010/271.xml"
   # fallback: if schema not found, do structural only
   fallback-to-structural: true

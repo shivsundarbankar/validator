@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <schema xmlns="http://xlate.io/EDISchema/v4">
 
-    <include schemaLocation="common.xml"/>
+    <include schemaLocation="common-elements.xml"/>
 
-    <!-- Only 4010 specific -->
 
     <segmentType name="BEG">
         <sequence>
@@ -26,15 +25,34 @@
         <sequence>
             <element type="E0098" minOccurs="1"/><!-- CUR01: Entity Identifier Code -->
             <element type="E0100" minOccurs="1"/><!-- CUR02: Currency Code -->
-            <element type="E0280" minOccurs="0"/><!-- CUR03: Exchange Rate -->
-            <element type="E0669" minOccurs="0"/> <!-- CUR04: Currency Market / Exchange Code -->
+            <element type="E0280" minOccurs="0"/><!-- CUR03: Exchange Rate | Optional -->
+            <element type="E0098" minOccurs="0"/><!-- CUR04: Entity Identifier Code | Optional -->
+            <element type="E0100" minOccurs="0"/><!-- CUR05: Currency Code | Optional -->
+            <element type="E0669" minOccurs="0"/> <!-- CUR06: Currency Market / Exchange Code -->
+            <element type="E0374" minOccurs="0"/> <!-- CUR07: Date/Time Qualifier - Conditional (required if CUR08 or CUR09 present) -->
+            <element type="E0373" minOccurs="0"/> <!-- CUR08: Date Optional - if CUR08 is present, then CUR07 is required -->
+            <element type="E0337" minOccurs="0"/> <!-- CUR09: Time | Optional - if CUR09 is present, then CUR07 is required -->
+            <element type="E0374" minOccurs="0"/> <!-- CUR10: Date/Time Qualifier - Conditional (required if CUR11 or CUR12 present) -->
+            <element type="E0373" minOccurs="0"/> <!-- CUR11: Date Optional - if CUR11 is present, then CUR10 is required -->
+            <element type="E0337" minOccurs="0"/> <!-- CUR12: Time | Optional - if CUR12 is present, then CUR10 is required -->
+            <element type="E0374" minOccurs="0"/> <!-- CUR13: Date/Time Qualifier - Conditional (required if CUR14 or CUR15 present) -->
+            <element type="E0373" minOccurs="0"/> <!-- CUR14: Date Optional - if CUR14 is present, then CUR13 is required -->
+            <element type="E0337" minOccurs="0"/> <!-- CUR15: Time | Optional - if CUR15 is present, then CUR13 is required -->
+            <element type="E0374" minOccurs="0"/> <!-- CUR16: Date/Time Qualifier - Conditional (required if CUR17 or CUR18 present) -->
+            <element type="E0373" minOccurs="0"/> <!-- CUR17: Date Optional - if CUR17 is present, then CUR16 is required -->
+            <element type="E0337" minOccurs="0"/> <!-- CUR18: Time | Optional - if CUR18 is present, then CUR16 is required -->
+            <element type="E0374" minOccurs="0"/> <!-- CUR19: Date/Time Qualifier - Conditional (required if CUR20 or CUR21 present) -->
+            <element type="E0373" minOccurs="0"/> <!-- CUR20: Date Optional - if CUR20 is present, then CUR19 is required -->
+            <element type="E0337" minOccurs="0"/> <!-- CUR21: Time | Optional - if CUR21 is present, then CUR19 is required -->
         </sequence>
     </segmentType>
 
     <segmentType name="REF">
         <sequence>
             <element type="E0128" minOccurs="1"/> <!-- REF01: Reference Identification Qualifier -->
-            <element type="E0127" minOccurs="0"/><!-- REF02: Reference Identification -->
+            <element type="E0127" minOccurs="0"/><!-- REF02: Reference Identification Conditional - At least one of REF02 or REF03 is required -->
+            <element type="E0352" minOccurs="0"/><!-- REF03: Description Conditional - At least one of REF02 or REF03 is required -->
+            <composite type="C040" minOccurs="0"/><!-- REF03: Description Conditional - At least one of REF02 or REF03 is required -->
         </sequence>
     </segmentType>
 
@@ -60,22 +78,24 @@
             <element type="E0334" minOccurs="0"/><!-- FOB04: Transportation Terms Qualifier Code -->
             <element type="E0335" minOccurs="0"/>  <!-- FOB05: Transportation Terms Code -->
             <element type="E0309" minOccurs="0"/> <!-- FOB06: Location Qualifier -->
-            <element type="E0310" minOccurs="0"/>   <!-- FOB07: Location -->
+            <element type="E0352" minOccurs="0"/>   <!-- FOB07: Description -->
             <element type="E0054" minOccurs="0"/><!-- FOB08: Risk of Loss Code -->
+            <element type="E0352" minOccurs="0"/>   <!-- FOB09: Description -->
         </sequence>
     </segmentType>
 
     <segmentType name="CSH">
         <sequence>
-            <element type="E0563" minOccurs="1"/> <!-- CSH01: Sales Requirement Code -->
+            <element type="E0563" minOccurs="0"/> <!-- CSH01: Sales Requirement Code -->
             <element type="E0306" minOccurs="0"/> <!-- CSH02: Action Code -->
             <element type="E0610" minOccurs="0"/> <!-- CSH03: Amount -->
             <element type="E0508" minOccurs="0"/><!-- CSH04: Account Number -->
-            <element type="E0559" minOccurs="0"/><!-- CSH05: Agency Qualifier Code -->
-            <element type="E0560" minOccurs="0"/>  <!-- CSH06: Special Services Code -->
-            <element type="E0566" minOccurs="0"/><!-- CSH07: Product/Service Substitution Code -->
-            <element type="E0954" minOccurs="0"/>  <!-- CSH08: Percent -->
-            <element type="E1004" minOccurs="0"/> <!-- CSH09: Percent Qualifier -->
+            <element type="E0373" minOccurs="0"/><!-- CSH05: Date -->
+            <element type="E0559" minOccurs="0"/><!-- CSH06: Agency Qualifier Code -->
+            <element type="E0560" minOccurs="0"/>  <!-- CSH07: Special Services Code -->
+            <element type="E0566" minOccurs="0"/><!-- CSH08: Product/Service Substitution Code -->
+            <element type="E0954" minOccurs="0"/>  <!-- CSH09: Percent -->
+            <element type="E1004" minOccurs="0"/> <!-- CSH10: Percent Qualifier -->
         </sequence>
     </segmentType>
 
@@ -92,10 +112,24 @@
             <element type="E0388" minOccurs="0"/><!-- ITD09: Terms Deferred Due Date -->
             <element type="E0389" minOccurs="0"/><!-- ITD10: Deferred Amount Due -->
             <element type="E0342" minOccurs="0"/><!-- ITD11: Percent of Invoice Payable -->
-            <element type="E0765" minOccurs="0"/> <!-- ITD12: Day of Month -->
-            <element type="E0107" minOccurs="0"/> <!-- ITD13: Payment Method Code -->
+            <element type="E0352" minOccurs="0"/><!-- ITD12: Description -->
+            <element type="E0765" minOccurs="0"/> <!-- ITD13: Day of Month -->
+            <element type="E0107" minOccurs="0"/> <!-- ITD14: Payment Method Code -->
+            <element type="E0954" minOccurs="0"/> <!-- ITD15: Percent -->
         </sequence>
     </segmentType>
+
+    <segmentType name="DTM">
+        <sequence>
+            <element type="E0374" minOccurs="1"/> <!-- DTM01: Date/Time Qualifier -->
+            <element type="E0373" minOccurs="0"/> <!-- DTM02: Date -->
+            <element type="E0337" minOccurs="0"/> <!-- DTM03: Time -->
+            <element type="E0623" minOccurs="0"/> <!-- DTM04: Time Code -->
+            <element type="E1250" minOccurs="0"/> <!-- DTM05: Date Time Period Format Qualifier -->
+            <element type="E1251" minOccurs="0"/> <!-- DTM06: Date Time Period -->
+        </sequence>
+    </segmentType>
+
 
     <segmentType name="N1">
         <sequence>
@@ -103,6 +137,8 @@
             <element type="E0093" minOccurs="0"/><!-- N102: Name -->
             <element type="E0066" minOccurs="0"/><!-- N103: Identification Code Qualifier -->
             <element type="E0067" minOccurs="0"/><!-- N104: Identification Code -->
+            <element type="E0706" minOccurs="0"/><!-- N105: Entity Relationship code -->
+            <element type="E0098" minOccurs="0"/><!-- N106: Entity Identifier Code -->
         </sequence>
     </segmentType>
 
@@ -120,15 +156,15 @@
             <element type="E0116" minOccurs="0"/><!-- N403: Postal Code -->
             <element type="E0026" minOccurs="0"/><!-- N404: Country Code -->
             <element type="E0309" minOccurs="0"/><!-- N405: Location Qualifier -->
-            <element type="E0310" minOccurs="0"/><!-- N406: Location -->
+            <element type="E0310" minOccurs="0"/><!-- N406: Location Identifier-->
         </sequence>
     </segmentType>
 
     <segmentType name="PO1">
         <sequence>
             <element type="E0350" minOccurs="0"/><!-- PO101: Assigned Identification -->
-            <element type="E0330" minOccurs="1"/><!-- PO102: Quantity Ordered -->
-            <element type="E0355" minOccurs="1"/><!-- PO103: Unit or Basis for Measurement Code -->
+            <element type="E0380" minOccurs="0"/><!-- PO102: Quantity -->
+            <element type="E0355" minOccurs="0"/><!-- PO103: Unit or Basis for Measurement Code -->
             <element type="E0212" minOccurs="0"/><!-- PO104: Unit Price -->
             <element type="E0639" minOccurs="0"/><!-- PO105: Basis of Unit Price Code -->
             <element type="E0235" minOccurs="0"/><!-- PO106: Product/Service ID Qualifier -->
@@ -159,13 +195,13 @@
         <sequence>
             <element type="E0349" minOccurs="1"/><!-- PID01: Item Description Type -->
             <element type="E0750" minOccurs="0"/><!-- PID02: Product/Process Characteristic Code -->
-            <element type="E0751" minOccurs="0"/><!-- PID03: Agency Qualifier Code (Description Code) -->
-            <element type="E0752" minOccurs="0"/><!-- PID04: Product Description Code -->
+            <element type="E0559" minOccurs="0"/><!-- PID03: Agency Qualifier Code -->
+            <element type="E0751" minOccurs="0"/><!-- PID04: Product Description Code -->
             <element type="E0352" minOccurs="0"/><!-- PID05: Description -->
-            <element type="E0822" minOccurs="0"/><!-- PID06: Surface/Layer/Position Code -->
-            <element type="E1073" minOccurs="0"/><!-- PID07: Yes/No Condition or Response Code -->
-            <element type="E0819" minOccurs="0"/><!-- PID08: Language Code -->
-            <element type="E0352" minOccurs="0"/><!-- PID09: Description (Additional/Extended) -->
+            <element type="E0752" minOccurs="0"/><!-- PID06: Surface/Layer/Position Code -->
+            <element type="E0822" minOccurs="0"/><!-- PID07: Source Subqualifier  -->
+            <element type="E1073" minOccurs="0"/><!-- PID08: Yes/No Condition or Response Code -->
+            <element type="E0819" minOccurs="0"/><!-- PID09: Language Code -->
         </sequence>
     </segmentType>
 
@@ -186,7 +222,10 @@
             <element type="E0065" minOccurs="0"/><!-- PO412: Height -->
             <element type="E0355" minOccurs="0"/><!-- PO413: Unit or Basis for Measurement Code -->
             <element type="E0810" minOccurs="0"/><!-- PO414: Inner Pack -->
-            <element type="E1470" minOccurs="0"/><!-- PO415: Number -->
+            <element type="E0752" minOccurs="0"/><!-- PO415: Surface/Layer/Position Code -->
+            <element type="E0350" minOccurs="0"/><!-- PO416: Assigned Identification -->
+            <element type="E0350" minOccurs="0"/><!-- PO417: Assigned Identification -->
+            <element type="E1470" minOccurs="0"/><!-- PO418: Number -->
         </sequence>
     </segmentType>
 
@@ -195,31 +234,32 @@
         <sequence>
             <element type="E0248" minOccurs="1"/><!-- SAC01: Allowance or Charge Indicator -->
             <element type="E1300" minOccurs="0"/><!-- SAC02: Service, Promotion, Allowance or Charge Code -->
-            <element type="E1301" minOccurs="0"/><!-- SAC03: Agency Service, Promotion, Allowance Code -->
-            <element type="E0610" minOccurs="0"/><!-- SAC04: Amount -->
-            <element type="E0378" minOccurs="0"/><!-- SAC05: Allowance/Charge Percent Qualifier -->
-            <element type="E0332" minOccurs="0"/><!-- SAC06: Percent -->
-            <element type="E0187" minOccurs="0"/><!-- SAC07: Weight Qualifier -->
-            <element type="E0380" minOccurs="0"/><!-- SAC08: Quantity -->
-            <element type="E0187" minOccurs="0"/><!-- SAC09: Unit or Basis for Measurement Code -->
-            <element type="E0118" minOccurs="0"/><!-- SAC10: Rate -->
-            <element type="E0118" minOccurs="0"/><!-- SAC11: Rate -->
-            <element type="E0352" minOccurs="0"/><!-- SAC12: Description -->
-            <element type="E1250" minOccurs="0"/><!-- SAC13: Date Time Period Format Qualifier -->
-            <element type="E1251" minOccurs="0"/><!-- SAC14: Date Time Period -->
-            <element type="E0331" minOccurs="0"/><!-- SAC15: Allowance or Charge Method of Handling Code -->
-            <element type="E0770" minOccurs="0"/><!-- SAC16: Option Number -->
+            <element type="E0559" minOccurs="0"/><!-- SAC03: Agency Qualifier Code -->
+            <element type="E1301" minOccurs="0"/><!-- SAC04: Agency Service, Promotion, Allowance Code -->
+            <element type="E0610" minOccurs="0"/><!-- SAC05: Amount -->
+            <element type="E0378" minOccurs="0"/><!-- SAC06: Allowance/Charge Percent Qualifier -->
+            <element type="E0332" minOccurs="0"/><!-- SAC07: Percent, Decimal Format -->
+            <element type="E0118" minOccurs="0"/><!-- SAC08: Rate -->
+            <element type="E0355" minOccurs="0"/><!-- SAC09: Unit of Basis for Measurement Code -->
+            <element type="E0380" minOccurs="0"/><!-- SAC10: Quantity -->
+            <element type="E0380" minOccurs="0"/><!-- SAC11: Quantity -->
+            <element type="E0331" minOccurs="0"/><!-- SAC12: Allowance or Change Method of Handling Code -->
+            <element type="E0127" minOccurs="0"/><!-- SAC13: Reference Identification -->
+            <element type="E0770" minOccurs="0"/><!-- SAC14: Option Number -->
+            <element type="E0352" minOccurs="0"/><!-- SAC15: Description -->
+            <element type="E0819" minOccurs="0"/><!-- SAC16: Language Code -->
         </sequence>
     </segmentType>
+
 
     <segmentType name="CTT">
         <sequence>
             <element type="E0354" minOccurs="1"/><!-- CTT01: Number of Line Items -->
             <element type="E0347" minOccurs="0"/><!-- CTT02: Hash Total -->
             <element type="E0081" minOccurs="0"/><!-- CTT03: Weight -->
-            <element type="E0183" minOccurs="0"/><!-- CTT04: Volume -->
-            <element type="E0355" minOccurs="0"/><!-- CTT05: Unit or Basis for Measurement Code -->
-            <element type="E0610" minOccurs="0"/><!-- CTT06: Amount -->
+            <element type="E0355" minOccurs="0"/><!-- CTT04: Unit or Basis for Measurement Code -->
+            <element type="E0183" minOccurs="0"/><!-- CTT05: Volume -->
+            <element type="E0355" minOccurs="0"/><!-- CTT06: Unit or Basis for Measurement Code -->
             <element type="E0352" minOccurs="0"/><!-- CTT07: Description -->
         </sequence>
     </segmentType>
