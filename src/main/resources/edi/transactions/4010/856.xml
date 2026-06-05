@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://xlate.io/EDISchema/v4">
+
+    <transaction>
+        <sequence>
+            <segment type="BSN" minOccurs="1" maxOccurs="1"/>
+            <segment type="DTM" minOccurs="0" maxOccurs="10"/>
+
+            <!-- Loop 0100 - Shipment (HL level S) -->
+            <loop code="0100" minOccurs="1" maxOccurs="200000">
+                <sequence>
+                    <segment type="HL"  minOccurs="1" maxOccurs="1"/>
+                    <segment type="TD1" minOccurs="0" maxOccurs="2"/>
+                    <segment type="TD3" minOccurs="0" maxOccurs="12"/>
+                    <segment type="TD5" minOccurs="0" maxOccurs="12"/>
+                    <segment type="REF" minOccurs="0" maxOccurs="10"/>
+                    <segment type="DTM" minOccurs="0" maxOccurs="10"/>
+
+                    <!-- Loop 0200 - Order (HL level O) -->
+                    <loop code="0200" minOccurs="0" maxOccurs="200000">
+                        <sequence>
+                            <segment type="HL"  minOccurs="1" maxOccurs="1"/>
+                            <segment type="PRF" minOccurs="0" maxOccurs="1"/>
+                            <segment type="REF" minOccurs="0" maxOccurs="12"/>
+                            <segment type="DTM" minOccurs="0" maxOccurs="10"/>
+
+                            <!-- Loop 0300 - Pack (HL level P) -->
+                            <loop code="0300" minOccurs="0" maxOccurs="200000">
+                                <sequence>
+                                    <segment type="HL"  minOccurs="1" maxOccurs="1"/>
+                                    <segment type="MAN" minOccurs="0" maxOccurs="10"/>
+                                    <segment type="PKG" minOccurs="0" maxOccurs="10"/>
+                                    <segment type="REF" minOccurs="0" maxOccurs="12"/>
+                                    <segment type="DTM" minOccurs="0" maxOccurs="10"/>
+
+                                    <!-- Loop 0400 - Item (HL level I) -->
+                                    <loop code="0400" minOccurs="0" maxOccurs="200000">
+                                        <sequence>
+                                            <segment type="HL"  minOccurs="1" maxOccurs="1"/>
+                                            <segment type="LIN" minOccurs="0" maxOccurs="1"/>
+                                            <segment type="SN1" minOccurs="0" maxOccurs="1"/>
+                                            <segment type="MEA" minOccurs="0" maxOccurs="40"/>
+                                            <segment type="PID" minOccurs="0" maxOccurs="200"/>
+                                            <segment type="REF" minOccurs="0" maxOccurs="12"/>
+                                            <segment type="DTM" minOccurs="0" maxOccurs="10"/>
+                                        </sequence>
+                                    </loop>
+
+                                </sequence>
+                            </loop>
+
+                        </sequence>
+                    </loop>
+
+                </sequence>
+            </loop>
+
+            <segment type="CTT" minOccurs="1" maxOccurs="1"/>
+            <segment type="AMT" minOccurs="0" maxOccurs="1"/>
+
+        </sequence>
+    </transaction>
+
+    <include schemaLocation="../../segments/4010.xml"/>
+
+</schema>

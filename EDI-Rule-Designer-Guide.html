@@ -1,0 +1,950 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>EDI Rule Designer Guide</title>
+<style>
+  body        { font-family: Calibri, Arial, sans-serif; font-size: 11pt; margin: 72pt; color: #1a1a1a; }
+  h1          { font-size: 20pt; color: #1F4E79; border-bottom: 2px solid #1F4E79; padding-bottom: 6pt; margin-bottom: 16pt; }
+  h2          { font-size: 14pt; color: #2E75B6; margin-top: 24pt; margin-bottom: 8pt; }
+  h3          { font-size: 12pt; color: #1F4E79; margin-top: 16pt; margin-bottom: 6pt; }
+  p           { margin: 6pt 0; line-height: 1.5; }
+  code        { font-family: Consolas, Courier New, monospace; font-size: 9.5pt; background: #F2F2F2; padding: 1px 4px; border-radius: 2px; }
+  pre         { font-family: Consolas, Courier New, monospace; font-size: 9pt; background: #F8F8F8; border: 1px solid #D0D0D0; border-left: 4px solid #2E75B6; padding: 10pt; margin: 10pt 0; line-height: 1.4; white-space: pre-wrap; }
+  pre.green   { border-left-color: #375623; background: #F0FFF0; }
+  pre.orange  { border-left-color: #C55A11; background: #FFF8F0; }
+  pre.purple  { border-left-color: #7030A0; background: #F9F0FF; }
+  table       { border-collapse: collapse; width: 100%; margin: 10pt 0; }
+  th          { background: #2E75B6; color: white; padding: 6pt 10pt; text-align: left; font-size: 10pt; }
+  td          { border: 1px solid #BDD7EE; padding: 5pt 10pt; font-size: 10pt; vertical-align: top; }
+  tr:nth-child(even) td { background: #EBF3FB; }
+  .note       { background: #FFF3CD; border-left: 4px solid #FFC107; padding: 8pt 12pt; margin: 10pt 0; }
+  .tip        { background: #D4EDDA; border-left: 4px solid #28A745; padding: 8pt 12pt; margin: 10pt 0; }
+  .warning    { background: #F8D7DA; border-left: 4px solid #DC3545; padding: 8pt 12pt; margin: 10pt 0; }
+  .info       { background: #D1ECF1; border-left: 4px solid #17A2B8; padding: 8pt 12pt; margin: 10pt 0; }
+  .step-box   { background: #EBF3FB; border: 1px solid #BDD7EE; border-radius: 4px; padding: 10pt 14pt; margin: 10pt 0; }
+  .step-num   { display: inline-block; background: #2E75B6; color: white; font-weight: bold;
+                border-radius: 50%; width: 20pt; height: 20pt; text-align: center;
+                line-height: 20pt; margin-right: 6pt; font-size: 10pt; }
+  ul, ol      { margin: 6pt 0; padding-left: 20pt; }
+  li          { margin: 3pt 0; line-height: 1.5; }
+  .cover-title { font-size: 28pt; color: #1F4E79; font-weight: bold; text-align: center; margin-top: 80pt; }
+  .cover-sub  { font-size: 14pt; color: #2E75B6; text-align: center; margin-top: 10pt; }
+  .cover-info { font-size: 10pt; color: #666; text-align: center; margin-top: 60pt; }
+  .page-break { page-break-after: always; }
+  .badge      { display: inline-block; font-size: 8pt; font-weight: bold; padding: 1px 6px;
+                border-radius: 3px; color: white; background: #2E75B6; margin-left: 4px; }
+  .badge.new  { background: #28A745; }
+</style>
+</head>
+<body>
+
+<!-- ══════════════ COVER PAGE ══════════════ -->
+<div class="cover-title">EDI Rule Designer Guide</div>
+<div class="cover-sub">How to Build Transformation Rules for the EDI Processing Engine</div>
+<div class="cover-info">
+  <p>Project: EDI Validator &amp; Transformer</p>
+  <p>Version: 2.0 &nbsp;|&nbsp; Date: June 2026</p>
+  <p>Audience: Integration Developers, EDI Analysts, Business Analysts</p>
+</div>
+<div class="page-break"></div>
+
+<!-- ══════════════ TABLE OF CONTENTS ══════════════ -->
+<h1>Table of Contents</h1>
+<ol style="font-size:11pt; line-height:2.2;">
+  <li>What Is a Rule Set?</li>
+  <li>The Two-Step Workflow</li>
+  <li>Understanding the Parse Output</li>
+  <li>Rule Types Reference
+    <ol type="a" style="line-height:1.8;">
+      <li>SEGMENT_FIELD</li>
+      <li>SEGMENT_FIELD_QUALIFIED</li>
+      <li>LOOP_FIELD</li>
+      <li>LOOP_ARRAY <span class="badge">UPDATED</span></li>
+      <li>LOOP_FIELD_NESTED <span class="badge new">NEW</span></li>
+      <li>LOOP_ARRAY_NESTED <span class="badge new">NEW</span></li>
+    </ol>
+  </li>
+  <li>How to Read Element Positions</li>
+  <li>Designing Rules — Step by Step</li>
+  <li>Understanding Loop Structure (Flat vs Nested)</li>
+  <li>Complete Example: 850 Purchase Order</li>
+  <li>Complete Example: 856 Ship Notice (ASN)</li>
+  <li>Flat File Output</li>
+  <li>Common Mistakes</li>
+  <li>Quick Reference Card</li>
+</ol>
+<div class="page-break"></div>
+
+<!-- ══════════════ 1. WHAT IS A RULE SET ══════════════ -->
+<h1>1. What Is a Rule Set?</h1>
+<p>
+  A <strong>Rule Set</strong> is a JSON document you send to the transformer alongside an EDI file.
+  It tells the engine which EDI fields to extract and what names to give them in the output.
+  Rules are applied at runtime — there is no Java code to write and no deployment required.
+</p>
+<table>
+  <tr><th>Field</th><th>Purpose</th><th>Required?</th></tr>
+  <tr><td><code>outputFormat</code></td><td><code>BUSINESS_JSON</code> or <code>FLAT_FILE</code></td><td>No (defaults to BUSINESS_JSON)</td></tr>
+  <tr><td><code>rules</code></td><td>Array of mapping instructions</td><td>Yes</td></tr>
+  <tr><td><code>flatFileConfig</code></td><td>Delimiter and record layout</td><td>Only when outputFormat = FLAT_FILE</td></tr>
+</table>
+<pre class="green">{
+  "outputFormat": "BUSINESS_JSON",
+  "rules": [
+    { "type": "SEGMENT_FIELD", "segment": "BEG", "position": 3, "field": "poNumber" },
+    ...
+  ]
+}</pre>
+<div class="note"><strong>Key principle:</strong> The output shape is entirely defined by the rules you write. You decide the field names and nesting. The engine follows your instructions.</div>
+<div class="page-break"></div>
+
+<!-- ══════════════ 2. TWO-STEP WORKFLOW ══════════════ -->
+<h1>2. The Two-Step Workflow</h1>
+<div class="step-box">
+  <p><span class="step-num">1</span><strong>Parse the EDI file first</strong></p>
+  <p style="margin-left:26pt;">Send the file to <code>POST /api/edi/parse</code>. The response shows every segment, every element position, and the complete loop hierarchy. This is your <em>design canvas</em>.</p>
+</div>
+<div class="step-box">
+  <p><span class="step-num">2</span><strong>Write rules based on what you see</strong></p>
+  <p style="margin-left:26pt;">Find the value in the parse output. Note its segment tag, element position, and which loop it sits in. Write the rule using those exact values.</p>
+</div>
+<div class="warning"><strong>Important:</strong> Element position numbers vary between trading partners. Always parse the actual file you received and read positions from its parse output — never assume from EDI specs alone.</div>
+<div class="page-break"></div>
+
+<!-- ══════════════ 3. PARSE OUTPUT ══════════════ -->
+<h1>3. Understanding the Parse Output</h1>
+<p>The parse output is a tree. Every node is either a <strong>SEGMENT</strong> or a <strong>LOOP</strong>.</p>
+
+<h2>3.1 SEGMENT node</h2>
+<pre>{
+  "nodeType": "SEGMENT",
+  "tag": "BEG",
+  "elements": [
+    { "position": 1, "value": "00" },
+    { "position": 2, "value": "SA" },
+    { "position": 3, "value": "1234"      },  ← position 3 = PO number
+    { "position": 4, "value": ""          },
+    { "position": 5, "value": "20260304"  }   ← position 5 = PO date
+  ]
+}</pre>
+
+<h2>3.2 LOOP node</h2>
+<pre>{
+  "nodeType": "LOOP",
+  "loopId": "1000",
+  "triggerSegment": "N1",     ← first segment tag of this loop
+  "occurrence": 1,
+  "children": [
+    { "nodeType": "SEGMENT", "tag": "N1", "elements": [
+        { "position": 1, "value": "ST"                    },  ← qualifier
+        { "position": 2, "value": "Virginia Distribution" }   ← name
+    ]},
+    { "nodeType": "SEGMENT", "tag": "N3", "elements": [...]},
+    { "nodeType": "SEGMENT", "tag": "N4", "elements": [...]}
+  ]
+}</pre>
+
+<h2>3.3 The five structural patterns</h2>
+<table>
+  <tr><th>What you see in parse output</th><th>Rule type to use</th></tr>
+  <tr><td>A SEGMENT directly under the transaction</td><td><code>SEGMENT_FIELD</code></td></tr>
+  <tr><td>Same segment tag appears multiple times with different qualifiers (e.g. two DTM with 001 / 002)</td><td><code>SEGMENT_FIELD_QUALIFIED</code></td></tr>
+  <tr><td>A LOOP appearing a few times with different qualifiers (e.g. N1 loops: ST, BT, VN)</td><td><code>LOOP_FIELD</code></td></tr>
+  <tr><td>A LOOP that repeats for every line item (e.g. PO1 × 3)</td><td><code>LOOP_ARRAY</code></td></tr>
+  <tr><td>Data inside a loop that is itself nested inside another loop (e.g. N1 inside HL[S])</td><td><code>LOOP_FIELD_NESTED</code></td></tr>
+  <tr><td>Line items nested deep inside a loop hierarchy (e.g. HL[I] items inside HL[S])</td><td><code>LOOP_ARRAY_NESTED</code></td></tr>
+</table>
+<div class="page-break"></div>
+
+<!-- ══════════════ 4. RULE TYPES REFERENCE ══════════════ -->
+<h1>4. Rule Types Reference</h1>
+
+<!-- 4a -->
+<h2>4a. SEGMENT_FIELD</h2>
+<p>Extracts one element from a segment that is a direct child of the transaction. Gets the <em>first</em> occurrence of that segment tag.</p>
+<table>
+  <tr><th>Field</th><th>Required</th><th>Description</th><th>Example</th></tr>
+  <tr><td><code>type</code></td><td>Yes</td><td>Always <code>"SEGMENT_FIELD"</code></td><td></td></tr>
+  <tr><td><code>segment</code></td><td>Yes</td><td>Segment tag</td><td><code>"BEG"</code></td></tr>
+  <tr><td><code>position</code></td><td>Yes</td><td>1-based element position</td><td><code>3</code></td></tr>
+  <tr><td><code>field</code></td><td>Yes</td><td>Output field name. Dot notation creates nested objects.</td><td><code>"poNumber"</code></td></tr>
+</table>
+<pre class="green">{ "type": "SEGMENT_FIELD", "segment": "BEG", "position": 3, "field": "poNumber" }
+{ "type": "SEGMENT_FIELD", "segment": "BSN", "position": 2, "field": "shipmentId" }</pre>
+
+<!-- 4b -->
+<h2>4b. SEGMENT_FIELD_QUALIFIED</h2>
+<p>Like SEGMENT_FIELD but scans <em>all occurrences</em> of the segment and picks the one whose element at <code>filterPosition</code> matches <code>filterValue</code>. Essential for segments like DTM and REF that repeat with different qualifier codes.</p>
+<table>
+  <tr><th>Field</th><th>Required</th><th>Description</th><th>Example</th></tr>
+  <tr><td><code>type</code></td><td>Yes</td><td>Always <code>"SEGMENT_FIELD_QUALIFIED"</code></td><td></td></tr>
+  <tr><td><code>segment</code></td><td>Yes</td><td>Segment tag to scan</td><td><code>"DTM"</code></td></tr>
+  <tr><td><code>filterPosition</code></td><td>Yes</td><td>Position of the qualifier element</td><td><code>1</code></td></tr>
+  <tr><td><code>filterValue</code></td><td>Yes</td><td>Qualifier value to match</td><td><code>"002"</code></td></tr>
+  <tr><td><code>position</code></td><td>Yes</td><td>Position of the data element to extract</td><td><code>2</code></td></tr>
+  <tr><td><code>field</code></td><td>Yes</td><td>Output field name</td><td><code>"deliveryDate"</code></td></tr>
+</table>
+<pre class="green">// Two DTM segments with different qualifiers
+{ "type": "SEGMENT_FIELD_QUALIFIED", "segment": "DTM",
+  "filterPosition": 1, "filterValue": "001", "position": 2, "field": "cancelDate" }
+
+{ "type": "SEGMENT_FIELD_QUALIFIED", "segment": "DTM",
+  "filterPosition": 1, "filterValue": "002", "position": 2, "field": "deliveryDate" }</pre>
+
+<!-- 4c -->
+<h2>4c. LOOP_FIELD</h2>
+<p>Finds a specific loop occurrence at the <strong>transaction level</strong> and extracts one element from a segment inside it. Use a filter to pick the right occurrence when the same loop type appears multiple times (e.g. N1 with ST / BT / VN qualifiers).</p>
+<table>
+  <tr><th>Field</th><th>Required</th><th>Description</th><th>Example</th></tr>
+  <tr><td><code>type</code></td><td>Yes</td><td>Always <code>"LOOP_FIELD"</code></td><td></td></tr>
+  <tr><td><code>loopTrigger</code></td><td>Yes</td><td>Trigger segment tag of the loop</td><td><code>"N1"</code>, <code>"HL"</code></td></tr>
+  <tr><td><code>filterSegment</code></td><td>No</td><td>Segment inside the loop to filter on</td><td><code>"N1"</code></td></tr>
+  <tr><td><code>filterPosition</code></td><td>No</td><td>Element position to compare</td><td><code>1</code></td></tr>
+  <tr><td><code>filterValue</code></td><td>No</td><td>Expected value (qualifier code)</td><td><code>"ST"</code></td></tr>
+  <tr><td><code>segment</code></td><td>Yes</td><td>Segment inside the loop to read</td><td><code>"N3"</code></td></tr>
+  <tr><td><code>position</code></td><td>Yes</td><td>Element position to extract</td><td><code>1</code></td></tr>
+  <tr><td><code>field</code></td><td>Yes</td><td>Output field name</td><td><code>"shipTo.street"</code></td></tr>
+</table>
+<pre class="green">// Ship-to name from N1 loop where N101 = "ST"
+{ "type": "LOOP_FIELD", "loopTrigger": "N1",
+  "filterSegment": "N1", "filterPosition": 1, "filterValue": "ST",
+  "segment": "N1", "position": 2, "field": "shipTo.name" }
+
+// PO number from HL[O] loop (856 flat structure — HL[O] is at transaction level)
+{ "type": "LOOP_FIELD", "loopTrigger": "HL",
+  "filterSegment": "HL", "filterPosition": 3, "filterValue": "O",
+  "segment": "PRF", "position": 1, "field": "purchaseOrderNumber" }</pre>
+
+<!-- 4d -->
+<h2>4d. LOOP_ARRAY <span class="badge">UPDATED</span></h2>
+<p>Maps every occurrence of a repeating loop into an array of objects. Now supports an optional filter to include only loops matching a qualifier — critical for 856 where all HL levels share the same trigger tag.</p>
+<table>
+  <tr><th>Field</th><th>Required</th><th>Description</th><th>Example</th></tr>
+  <tr><td><code>type</code></td><td>Yes</td><td>Always <code>"LOOP_ARRAY"</code></td><td></td></tr>
+  <tr><td><code>loopTrigger</code></td><td>Yes</td><td>Trigger segment tag of the repeating loop</td><td><code>"PO1"</code>, <code>"HL"</code></td></tr>
+  <tr><td><code>filterSegment</code></td><td>No</td><td>Segment to filter loops on (for 856: "HL")</td><td><code>"HL"</code></td></tr>
+  <tr><td><code>filterPosition</code></td><td>No</td><td>Element position for filter</td><td><code>3</code></td></tr>
+  <tr><td><code>filterValue</code></td><td>No</td><td>Only include loops where this value matches</td><td><code>"I"</code></td></tr>
+  <tr><td><code>arrayField</code></td><td>Yes</td><td>Output array field name</td><td><code>"lineItems"</code></td></tr>
+  <tr><td><code>itemRules</code></td><td>Yes</td><td>Field mappings applied to each loop occurrence</td><td>See below</td></tr>
+</table>
+<pre class="green">// 850 line items — all PO1 loops (no filter needed, PO1 is unique)
+{ "type": "LOOP_ARRAY", "loopTrigger": "PO1", "arrayField": "lineItems",
+  "itemRules": [
+    { "segment": "PO1", "position": 2, "field": "quantityOrdered" },
+    { "segment": "PO1", "position": 4, "field": "unitPrice" },
+    { "segment": "PID", "position": 5, "field": "productDescription" }
+  ]
+}
+
+// 856 item-level lines — filter to HL[I] only (HL[S/O/T/P] also exist as siblings)
+{ "type": "LOOP_ARRAY", "loopTrigger": "HL",
+  "filterSegment": "HL", "filterPosition": 3, "filterValue": "I",
+  "arrayField": "lineItems",
+  "itemRules": [
+    { "segment": "LIN", "position": 3, "field": "vendorItemNumber" },
+    { "segment": "SN1", "position": 2, "field": "shippedQuantity" },
+    { "segment": "PID", "position": 5, "field": "productDescription" }
+  ]
+}</pre>
+
+<!-- 4e -->
+<h2>4e. LOOP_FIELD_NESTED <span class="badge new">NEW</span></h2>
+<p>Navigate a <strong>chain of nested loops</strong> to reach a deeply nested loop, then extract one element from a segment inside it. Use this when the data you want is inside a loop that is itself inside another loop.</p>
+<p>Each step in <code>loopChain</code> navigates one level deeper. The chain is described using <code>LoopChainEntry</code> objects.</p>
+
+<h3>LoopChainEntry fields</h3>
+<table>
+  <tr><th>Field</th><th>Required</th><th>Description</th><th>Example</th></tr>
+  <tr><td><code>trigger</code></td><td>Yes</td><td>Trigger segment tag of the loop to enter</td><td><code>"HL"</code>, <code>"N1"</code></td></tr>
+  <tr><td><code>filterSegment</code></td><td>No</td><td>Segment to filter on. Defaults to trigger if null.</td><td><code>"HL"</code></td></tr>
+  <tr><td><code>filterPosition</code></td><td>No</td><td>Element position. Defaults to 1 if null.</td><td><code>3</code></td></tr>
+  <tr><td><code>filterValue</code></td><td>No</td><td>Value to match. Null = take first matching loop.</td><td><code>"S"</code></td></tr>
+</table>
+
+<h3>LOOP_FIELD_NESTED rule fields</h3>
+<table>
+  <tr><th>Field</th><th>Required</th><th>Description</th><th>Example</th></tr>
+  <tr><td><code>type</code></td><td>Yes</td><td>Always <code>"LOOP_FIELD_NESTED"</code></td><td></td></tr>
+  <tr><td><code>loopChain</code></td><td>Yes</td><td>Navigation path — array of LoopChainEntry</td><td>See below</td></tr>
+  <tr><td><code>segment</code></td><td>Yes</td><td>Segment inside the final loop to read</td><td><code>"N1"</code></td></tr>
+  <tr><td><code>position</code></td><td>Yes</td><td>Element position to extract</td><td><code>2</code></td></tr>
+  <tr><td><code>field</code></td><td>Yes</td><td>Output field name (dot notation supported)</td><td><code>"shipTo.name"</code></td></tr>
+  <tr><td><code>filterPosition</code></td><td>No</td><td>Qualifier position for segment-level lookup (like SEGMENT_FIELD_QUALIFIED but inside the target loop)</td><td><code>1</code></td></tr>
+  <tr><td><code>filterValue</code></td><td>No</td><td>Qualifier value to match on the segment</td><td><code>"BM"</code></td></tr>
+</table>
+
+<pre class="purple">// N1[ST] party inside HL[S]: navigate tx → HL[S] → N1[ST], then read N1[pos2]
+{ "type": "LOOP_FIELD_NESTED",
+  "loopChain": [
+    { "trigger": "HL", "filterPosition": 3, "filterValue": "S" },
+    { "trigger": "N1", "filterPosition": 1, "filterValue": "ST" }
+  ],
+  "segment": "N1", "position": 2, "field": "shipTo.name"
+}
+
+// REF*BM inside HL[S]: navigate to HL[S], then find REF where REF[1]="BM"
+{ "type": "LOOP_FIELD_NESTED",
+  "loopChain": [{ "trigger": "HL", "filterPosition": 3, "filterValue": "S" }],
+  "segment": "REF", "filterPosition": 1, "filterValue": "BM",
+  "position": 2, "field": "billOfLading"
+}
+
+// N1 street address: navigate to HL[S] → N1[SF], then read N3[pos1]
+{ "type": "LOOP_FIELD_NESTED",
+  "loopChain": [
+    { "trigger": "HL", "filterPosition": 3, "filterValue": "S" },
+    { "trigger": "N1", "filterPosition": 1, "filterValue": "SF" }
+  ],
+  "segment": "N3", "position": 1, "field": "shipFrom.street"
+}</pre>
+
+<!-- 4f -->
+<h2>4f. LOOP_ARRAY_NESTED <span class="badge new">NEW</span></h2>
+<p>Navigate a chain of nested loops to reach a parent loop, then map every child loop into an array. Use when line items are physically nested several levels deep.</p>
+<table>
+  <tr><th>Field</th><th>Required</th><th>Description</th><th>Example</th></tr>
+  <tr><td><code>type</code></td><td>Yes</td><td>Always <code>"LOOP_ARRAY_NESTED"</code></td><td></td></tr>
+  <tr><td><code>loopChain</code></td><td>Yes</td><td>Navigation path to the parent of the array loops</td><td>See below</td></tr>
+  <tr><td><code>loopTrigger</code></td><td>Yes</td><td>Trigger segment of the child loops to iterate</td><td><code>"HL"</code></td></tr>
+  <tr><td><code>filterPosition</code></td><td>No</td><td>Position to filter child loops</td><td><code>3</code></td></tr>
+  <tr><td><code>filterValue</code></td><td>No</td><td>Only include child loops matching this value</td><td><code>"I"</code></td></tr>
+  <tr><td><code>arrayField</code></td><td>Yes</td><td>Output array field name</td><td><code>"lineItems"</code></td></tr>
+  <tr><td><code>itemRules</code></td><td>Yes</td><td>Field mappings for each array item</td><td>See below</td></tr>
+</table>
+<pre class="purple">// Items nested inside HL[S] → HL[O] → HL[T] → HL[P], then iterate HL[I] children
+{
+  "type": "LOOP_ARRAY_NESTED",
+  "loopChain": [
+    { "trigger": "HL", "filterPosition": 3, "filterValue": "S" },
+    { "trigger": "HL", "filterPosition": 3, "filterValue": "O" },
+    { "trigger": "HL", "filterPosition": 3, "filterValue": "T" },
+    { "trigger": "HL", "filterPosition": 3, "filterValue": "P" }
+  ],
+  "loopTrigger": "HL", "filterPosition": 3, "filterValue": "I",
+  "arrayField": "lineItems",
+  "itemRules": [
+    { "segment": "LIN", "position": 3, "field": "vendorItemNumber" },
+    { "segment": "SN1", "position": 2, "field": "shippedQuantity"  }
+  ]
+}</pre>
+<div class="info"><strong>When to use LOOP_ARRAY_NESTED vs LOOP_ARRAY:</strong> If the HL loops are flat siblings (all at transaction level), use plain LOOP_ARRAY with a filter. Only use LOOP_ARRAY_NESTED when the item loops are physically nested inside a parent loop in the parse output tree.</div>
+<div class="page-break"></div>
+
+<!-- ══════════════ 5. ELEMENT POSITIONS ══════════════ -->
+<h1>5. How to Read Element Positions</h1>
+<p>Elements are numbered 1-based from left to right. <code>BEG03</code> = segment BEG, position 3.</p>
+<pre>Parse output:
+───────────────────────────────────────────────────────────────────────
+"tag": "PO1",
+"elements": [
+  { "position": 1,  "value": "1"           },  ← PO101: line number
+  { "position": 2,  "value": "1080"        },  ← PO102: qty ordered     ← position = 2
+  { "position": 3,  "value": "EA"          },  ← PO103: unit of measure
+  { "position": 4,  "value": "13"          },  ← PO104: unit price      ← position = 4
+  { "position": 5,  "value": ""            },  ← PO105: (empty)
+  { "position": 6,  "value": "SK"          },  ← PO106: qualifier
+  { "position": 7,  "value": "2713824"     },  ← PO107: SKU number      ← position = 7
+  { "position": 8,  "value": "VP"          },  ← PO108: qualifier
+  { "position": 9,  "value": "HM9005"      },  ← PO109: vendor part #   ← position = 9
+  { "position": 10, "value": "UP"          },  ← PO110: qualifier
+  { "position": 11, "value": "850062021402"}   ← PO111: UPC code        ← position = 11
+]
+
+Rules you write:
+───────────────────────────────────────────────────────────────────────
+{ "segment": "PO1", "position": 2,  "field": "quantityOrdered" }
+{ "segment": "PO1", "position": 4,  "field": "unitPrice"       }
+{ "segment": "PO1", "position": 7,  "field": "skuNumber"       }
+{ "segment": "PO1", "position": 9,  "field": "vendorPartNumber"}
+{ "segment": "PO1", "position": 11, "field": "upcCode"         }</pre>
+
+<h2>5.1 Dot notation for nested fields</h2>
+<pre>Rule:    { "field": "shipTo.address.city" }
+Output:  { "shipTo": { "address": { "city": "ASHLAND" } } }</pre>
+<div class="page-break"></div>
+
+<!-- ══════════════ 6. DESIGNING RULES STEP BY STEP ══════════════ -->
+<h1>6. Designing Rules — Step by Step</h1>
+
+<div class="step-box">
+  <p><span class="step-num">1</span><strong>Parse:</strong> <code>POST /api/edi/parse</code> with the EDI file</p>
+</div>
+<div class="step-box">
+  <p><span class="step-num">2</span><strong>Find</strong> the value you want in <code>transaction.children</code></p>
+</div>
+<div class="step-box">
+  <p><span class="step-num">3</span><strong>Identify the pattern</strong> using this decision flowchart:</p>
+  <pre style="background:#F0F0F0; border-left-color:#888;">Is the value in...
+
+  ┌─ A SEGMENT directly under transaction?
+  │     └─ Does the same tag appear multiple times with different qualifiers?
+  │           Yes → SEGMENT_FIELD_QUALIFIED
+  │           No  → SEGMENT_FIELD
+  │
+  └─ Inside a LOOP?
+        └─ Is that loop a direct child of the transaction?
+              Yes → Is the loop a party loop (N1)?     → LOOP_FIELD
+                    Is it a repeating line-item loop?   → LOOP_ARRAY  (add filter if needed)
+              No  → The loop is nested inside another loop
+                    Want one value?    → LOOP_FIELD_NESTED  (with loopChain)
+                    Want an array?     → LOOP_ARRAY_NESTED  (with loopChain)</pre>
+</div>
+<div class="step-box">
+  <p><span class="step-num">4</span><strong>Note</strong> the segment tag, element position, trigger, and any qualifier values</p>
+</div>
+<div class="step-box">
+  <p><span class="step-num">5</span><strong>Write the rule</strong> using those exact values</p>
+</div>
+<div class="page-break"></div>
+
+<!-- ══════════════ 7. FLAT VS NESTED LOOPS ══════════════ -->
+<h1>7. Understanding Loop Structure: Flat vs Nested</h1>
+<p>This is the most important concept when working with 856 (ASN) documents.</p>
+
+<h2>7.1 Flat Loop Structure (850, 810)</h2>
+<p>In 850 and 810, all loops are direct children of the transaction. N1 party loops and PO1 line-item loops sit at the same level.</p>
+<pre>transaction.children:
+  SEGMENT  BEG, CUR, REF, DTM ...      ← direct transaction segments
+  LOOP  N1[ST]  (ship-to party)        ← direct child
+  LOOP  N1[BT]  (bill-to party)        ← direct child
+  LOOP  PO1     (line 1)               ← direct child
+  LOOP  PO1     (line 2)               ← direct child</pre>
+<p>→ Use <code>SEGMENT_FIELD</code>, <code>LOOP_FIELD</code>, <code>LOOP_ARRAY</code></p>
+
+<h2>7.2 Nested Loop Structure (856 N1 inside HL)</h2>
+<p>In 856, N1 party loops are nested <em>inside</em> the HL[S] (Shipment) loop. They are not direct children of the transaction.</p>
+<pre>transaction.children:
+  SEGMENT  BSN                         ← direct transaction segment
+  LOOP  HL[S]  (shipment level)        ← direct child
+    ├── SEGMENT  TD1, TD5, TD3, REF, DTM, FOB
+    ├── LOOP  N1[SF]  (ship-from)      ← NESTED inside HL[S]
+    └── LOOP  N1[ST]  (ship-to)        ← NESTED inside HL[S]
+  LOOP  HL[O]  (order level)           ← direct child (FLAT sibling of HL[S])
+  LOOP  HL[T]  (tare/pallet level)     ← direct child (FLAT sibling)
+  LOOP  HL[P]  (pack/carton level)     ← direct child (FLAT sibling)
+  LOOP  HL[I]  (item level)            ← direct child (FLAT sibling)</pre>
+
+<div class="note">
+  <strong>Key insight for 856:</strong> The different HL levels (S, O, T, P, I) are <strong>flat siblings</strong> at the transaction level — they are NOT physically nested inside each other even though they have a logical parent-child relationship via HL02.
+  Only N1 (and other sub-loops) are physically nested inside HL[S].
+</div>
+
+<table>
+  <tr><th>Data in 856</th><th>Location in parse tree</th><th>Rule to use</th></tr>
+  <tr><td>BSN (shipment ID, date)</td><td>Direct transaction segment</td><td><code>SEGMENT_FIELD</code></td></tr>
+  <tr><td>TD1, REF, DTM inside HL[S]</td><td>Inside HL[S] — use chain of 1 step</td><td><code>LOOP_FIELD_NESTED</code></td></tr>
+  <tr><td>REF*BM inside HL[S] (multiple REF)</td><td>Inside HL[S] with qualifier filter</td><td><code>LOOP_FIELD_NESTED</code> + filterValue</td></tr>
+  <tr><td>N1[ST] and N1[SF] parties</td><td>Nested inside HL[S] → N1 loop</td><td><code>LOOP_FIELD_NESTED</code> (2-step chain)</td></tr>
+  <tr><td>PRF order number (in HL[O])</td><td>HL[O] is a flat sibling → direct from tx</td><td><code>LOOP_FIELD</code> with filterValue="O"</td></tr>
+  <tr><td>LIN/SN1/PID item data (in HL[I])</td><td>HL[I] is a flat sibling → direct from tx</td><td><code>LOOP_ARRAY</code> with filterValue="I"</td></tr>
+</table>
+<div class="page-break"></div>
+
+<!-- ══════════════ 8. COMPLETE 850 EXAMPLE ══════════════ -->
+<h1>8. Complete Example: 850 Purchase Order</h1>
+
+<h2>8.1 The EDI Document</h2>
+<pre class="orange">ISA*00*          *00*          *ZZ*TEST           *ZZ*TEST           *260327*1548*U*00401*100011237*0*P*>~
+GS*PO*TEST*TEST*20260327*1548*12237*X*004030~
+ST*850*12237~
+BEG*00*SA*1234**20260304~
+CUR*BY*USD~
+REF*IA*7931~
+PER*BD*SAVEENA MANNINO~
+ITD***2*20260503*30*******2% 30 DAYS NET 60~
+DTM*001*20260410~
+DTM*002*20260403~
+N1*ST*Virginia Distribution Ctr 9004*92*9004~
+N3*112 The Vitamin Shoppe Way~
+N4*ASHLAND*VA*23005*USA~
+N1*VN*Cure Inc~
+N3*25 Kent Ave 45h fl~
+N4*Brooklyn*NY*11249*USA~
+PO1*1*1080*EA*13**SK*2713824*VP*HM9005*UP*850062021402~
+PID*F****16ct Watermelon Hydration~
+PO4*12~
+SAC*A*F800***1404000**********PROMOTIONAL ALLOWANCE~
+PO1*2*1080*EA*13**SK*2713832*VP*HM9009*UP*850062021419~
+PID*F****16ct Strawberry Kiwi Hydration~
+PO4*12~
+SAC*A*F800***1404000**********PROMOTIONAL ALLOWANCE~
+PO1*3*1080*EA*13**SK*2713857*VP*HM9011*UP*850062021426~
+PID*F****16ct Tropical Punch Hydration~
+PO4*12~
+SAC*A*F800***1404000**********PROMOTIONAL ALLOWANCE~
+CTT*3~
+SE*30*12237~</pre>
+
+<h2>8.2 Parse output structure</h2>
+<pre>transaction.children:
+  SEGMENT  BEG  [pos3="1234", pos5="20260304"]
+  SEGMENT  CUR  [pos2="USD"]
+  SEGMENT  REF  [pos1="IA",  pos2="7931"]
+  SEGMENT  PER  [pos1="BD",  pos2="SAVEENA MANNINO"]
+  SEGMENT  ITD  [pos3="2", pos5="30", pos12="2% 30 DAYS NET 60"]
+  SEGMENT  DTM  [pos1="001", pos2="20260410"]   ← cancel date (first DTM)
+  SEGMENT  DTM  [pos1="002", pos2="20260403"]   ← delivery date (second DTM)
+  LOOP  N1[ST]
+    N1[pos1="ST" pos2="Virginia Distribution Ctr 9004" pos4="9004"]
+    N3[pos1="112 The Vitamin Shoppe Way"]
+    N4[pos1="ASHLAND" pos2="VA" pos3="23005"]
+  LOOP  N1[VN]
+    N1[pos1="VN" pos2="Cure Inc"]
+    N3[pos1="25 Kent Ave 45h fl"]
+    N4[pos1="Brooklyn" pos2="NY" pos3="11249"]
+  LOOP  PO1 occ=1
+    PO1[pos2="1080" pos4="13" pos7="2713824" pos9="HM9005" pos11="850062021402"]
+    PID[pos5="16ct Watermelon Hydration"]
+    PO4[pos1="12"]
+    SAC[pos5="1404000"]
+  LOOP  PO1 occ=2  ... (Strawberry Kiwi)
+  LOOP  PO1 occ=3  ... (Tropical Punch)</pre>
+
+<h2>8.3 Complete Rule Set</h2>
+<pre class="green">{
+  "outputFormat": "BUSINESS_JSON",
+  "rules": [
+
+    // ── Header fields ─────────────────────────────────────────────────────
+    { "type": "SEGMENT_FIELD", "segment": "BEG", "position": 3,  "field": "poNumber"          },
+    { "type": "SEGMENT_FIELD", "segment": "BEG", "position": 5,  "field": "poDate"            },
+    { "type": "SEGMENT_FIELD", "segment": "CUR", "position": 2,  "field": "currency"          },
+    { "type": "SEGMENT_FIELD", "segment": "REF", "position": 2,  "field": "vendorNumber"      },
+    { "type": "SEGMENT_FIELD", "segment": "PER", "position": 2,  "field": "buyerContact"      },
+    { "type": "SEGMENT_FIELD", "segment": "ITD", "position": 3,  "field": "terms.discountPct" },
+    { "type": "SEGMENT_FIELD", "segment": "ITD", "position": 5,  "field": "terms.netDays"     },
+    { "type": "SEGMENT_FIELD", "segment": "ITD", "position": 12, "field": "terms.description" },
+
+    // ── Dates (two DTM segments — use SEGMENT_FIELD_QUALIFIED) ────────────
+    { "type": "SEGMENT_FIELD_QUALIFIED", "segment": "DTM",
+      "filterPosition": 1, "filterValue": "001", "position": 2, "field": "cancelDate"   },
+    { "type": "SEGMENT_FIELD_QUALIFIED", "segment": "DTM",
+      "filterPosition": 1, "filterValue": "002", "position": 2, "field": "deliveryDate" },
+
+    // ── Ship-To party (N1 loop where N101 = "ST") ─────────────────────────
+    { "type": "LOOP_FIELD", "loopTrigger": "N1",
+      "filterSegment": "N1", "filterPosition": 1, "filterValue": "ST",
+      "segment": "N1", "position": 2, "field": "shipTo.name"         },
+    { "type": "LOOP_FIELD", "loopTrigger": "N1",
+      "filterSegment": "N1", "filterPosition": 1, "filterValue": "ST",
+      "segment": "N1", "position": 4, "field": "shipTo.locationCode" },
+    { "type": "LOOP_FIELD", "loopTrigger": "N1",
+      "filterSegment": "N1", "filterPosition": 1, "filterValue": "ST",
+      "segment": "N3", "position": 1, "field": "shipTo.street"       },
+    { "type": "LOOP_FIELD", "loopTrigger": "N1",
+      "filterSegment": "N1", "filterPosition": 1, "filterValue": "ST",
+      "segment": "N4", "position": 1, "field": "shipTo.city"         },
+    { "type": "LOOP_FIELD", "loopTrigger": "N1",
+      "filterSegment": "N1", "filterPosition": 1, "filterValue": "ST",
+      "segment": "N4", "position": 2, "field": "shipTo.state"        },
+    { "type": "LOOP_FIELD", "loopTrigger": "N1",
+      "filterSegment": "N1", "filterPosition": 1, "filterValue": "ST",
+      "segment": "N4", "position": 3, "field": "shipTo.zip"          },
+
+    // ── Vendor party (N1 loop where N101 = "VN") ──────────────────────────
+    { "type": "LOOP_FIELD", "loopTrigger": "N1",
+      "filterSegment": "N1", "filterPosition": 1, "filterValue": "VN",
+      "segment": "N1", "position": 2, "field": "vendor.name"         },
+    { "type": "LOOP_FIELD", "loopTrigger": "N1",
+      "filterSegment": "N1", "filterPosition": 1, "filterValue": "VN",
+      "segment": "N3", "position": 1, "field": "vendor.street"       },
+    { "type": "LOOP_FIELD", "loopTrigger": "N1",
+      "filterSegment": "N1", "filterPosition": 1, "filterValue": "VN",
+      "segment": "N4", "position": 1, "field": "vendor.city"         },
+    { "type": "LOOP_FIELD", "loopTrigger": "N1",
+      "filterSegment": "N1", "filterPosition": 1, "filterValue": "VN",
+      "segment": "N4", "position": 2, "field": "vendor.state"        },
+
+    // ── Line items (repeating PO1 loops) ──────────────────────────────────
+    {
+      "type": "LOOP_ARRAY", "loopTrigger": "PO1", "arrayField": "lineItems",
+      "itemRules": [
+        { "segment": "PO1", "position": 1,  "field": "lineNumber"        },
+        { "segment": "PO1", "position": 2,  "field": "quantityOrdered"   },
+        { "segment": "PO1", "position": 3,  "field": "unitOfMeasure"     },
+        { "segment": "PO1", "position": 4,  "field": "unitPrice"         },
+        { "segment": "PO1", "position": 7,  "field": "skuNumber"         },
+        { "segment": "PO1", "position": 9,  "field": "vendorPartNumber"  },
+        { "segment": "PO1", "position": 11, "field": "upcCode"           },
+        { "segment": "PID", "position": 5,  "field": "productDescription"},
+        { "segment": "PO4", "position": 1,  "field": "packSize"          },
+        { "segment": "SAC", "position": 5,  "field": "allowanceAmount"   }
+      ]
+    }
+  ]
+}</pre>
+
+<h2>8.4 Expected Output</h2>
+<pre class="green">{
+  "poNumber": "1234",  "poDate": "20260304",  "currency": "USD",
+  "vendorNumber": "7931",  "buyerContact": "SAVEENA MANNINO",
+  "cancelDate": "20260410",  "deliveryDate": "20260403",
+  "terms": { "discountPct": "2", "netDays": "30", "description": "2% 30 DAYS NET 60" },
+  "shipTo": { "name": "Virginia Distribution Ctr 9004", "locationCode": "9004",
+              "street": "112 The Vitamin Shoppe Way", "city": "ASHLAND", "state": "VA", "zip": "23005" },
+  "vendor":  { "name": "Cure Inc", "street": "25 Kent Ave 45h fl", "city": "Brooklyn", "state": "NY" },
+  "lineItems": [
+    { "lineNumber":"1", "quantityOrdered":"1080", "unitOfMeasure":"EA", "unitPrice":"13",
+      "skuNumber":"2713824", "vendorPartNumber":"HM9005", "upcCode":"850062021402",
+      "productDescription":"16ct Watermelon Hydration", "packSize":"12", "allowanceAmount":"1404000" },
+    { "lineNumber":"2", "quantityOrdered":"1080", "unitOfMeasure":"EA", "unitPrice":"13",
+      "skuNumber":"2713832", "vendorPartNumber":"HM9009", "upcCode":"850062021419",
+      "productDescription":"16ct Strawberry Kiwi Hydration", "packSize":"12", "allowanceAmount":"1404000" },
+    { "lineNumber":"3", "quantityOrdered":"1080", "unitOfMeasure":"EA", "unitPrice":"13",
+      "skuNumber":"2713857", "vendorPartNumber":"HM9011", "upcCode":"850062021426",
+      "productDescription":"16ct Tropical Punch Hydration", "packSize":"12", "allowanceAmount":"1404000" }
+  ]
+}</pre>
+<div class="page-break"></div>
+
+<!-- ══════════════ 9. COMPLETE 856 EXAMPLE ══════════════ -->
+<h1>9. Complete Example: 856 Ship Notice (ASN)</h1>
+
+<h2>9.1 The EDI Document</h2>
+<pre class="orange">ISA*00*          *00*          *ZZ*AAAABBBB       *08*925485US00     *260522*1630*U*00401*000002381*0*P*>~
+GS*SH*ROOTSAFL*925485US00*20260522*163057*2381*X*005010~
+ST*856*2413~
+BSN*00*7007243-1*20260522*0430*0001~
+HL*1**S*1~
+TD1******G*1356*LB*67*CF~
+TD5**2*RJWI*LT~
+REF*CN*1198629~    REF*BM*0003568~    REF*OQ*7007243~
+DTM*011*20260522*110514~
+N1*SF*RJW MESQUITE WAREHOUSE D01*92*D01~
+N3*2830 E. SCYENE RD~
+N4*MESQUITE*TX*75181*US~
+N1*ST*WALMART*UL*0078742033907~
+N3*2120 N. STEMMONS ST~
+N4*SANGER*TX*76266*US~
+HL*2*1*O*1~
+PRF*3456TEST***20240903~
+REF*IA*430524921~
+HL*3*2*T*1~
+MAN*GM*00101968520780000018~
+HL*4*3*P*1~
+MAN*CP*00199874795164~
+HL*5*4*I*0~
+LIN**VN*3541W*IN*683696658*UP*199874183541*UK*00199874795164~
+SN1**6*CA~
+PID*F****Intensive Magnesium Relief 4oz~
+DTM*036*20900101~
+CTT*5~</pre>
+
+<h2>9.2 Parse output structure for 856</h2>
+<pre>transaction.children:
+  SEGMENT  BSN  [pos2="7007243-1" pos3="20260522" pos4="0430"]   ← DIRECT segment
+
+  LOOP  HL[S]  trigger="HL"                                      ← DIRECT child
+    SEGMENT  HL  [pos1="1" pos2="" pos3="S" pos4="1"]
+    SEGMENT  TD1 [pos7="1356" pos8="LB"]
+    SEGMENT  REF [pos1="CN" pos2="1198629"]
+    SEGMENT  REF [pos1="BM" pos2="0003568"]
+    SEGMENT  REF [pos1="OQ" pos2="7007243"]
+    SEGMENT  DTM [pos1="011" pos2="20260522" pos3="110514"]
+    LOOP  N1[SF]  trigger="N1"                 ← NESTED inside HL[S]
+      N1[pos1="SF" pos2="RJW MESQUITE WAREHOUSE D01" pos4="D01"]
+      N3[pos1="2830 E. SCYENE RD"]
+      N4[pos1="MESQUITE" pos2="TX" pos3="75181"]
+    LOOP  N1[ST]  trigger="N1"                 ← NESTED inside HL[S]
+      N1[pos1="ST" pos2="WALMART" pos4="0078742033907"]
+      N3[pos1="2120 N. STEMMONS ST"]
+      N4[pos1="SANGER" pos2="TX" pos3="76266"]
+
+  LOOP  HL[O]  trigger="HL"   ← FLAT SIBLING of HL[S] (not nested inside it!)
+    SEGMENT  HL  [pos1="2" pos2="1" pos3="O" pos4="1"]
+    SEGMENT  PRF [pos1="3456TEST" pos4="20240903"]
+    SEGMENT  REF [pos1="IA" pos2="430524921"]
+
+  LOOP  HL[T]  trigger="HL"   ← FLAT SIBLING
+    SEGMENT  MAN [pos1="GM" pos2="00101968520780000018"]
+
+  LOOP  HL[P]  trigger="HL"   ← FLAT SIBLING
+    SEGMENT  MAN [pos1="CP" pos2="00199874795164"]
+
+  LOOP  HL[I]  trigger="HL"   ← FLAT SIBLING
+    SEGMENT  LIN [pos2="VN" pos3="3541W" pos4="IN" pos5="683696658"
+                  pos6="UP" pos7="199874183541" pos8="UK" pos9="00199874795164"]
+    SEGMENT  SN1 [pos2="6" pos3="CA"]
+    SEGMENT  PID [pos5="Intensive Magnesium Relief 4oz"]
+    SEGMENT  DTM [pos1="036" pos2="20900101"]</pre>
+
+<div class="info">
+  <strong>Why are HL loops flat siblings?</strong> The X12 856 schema in StAEDI defines all HL-level loops at the same transaction depth. The hierarchical relationship is expressed via <code>HL02</code> (parent ID), not physical nesting. Only sub-loops like N1 and PID are physically nested inside their parent HL level.
+</div>
+
+<h2>9.3 Complete Rule Set for 856</h2>
+<pre class="green">{
+  "outputFormat": "BUSINESS_JSON",
+  "rules": [
+
+    // ── Direct transaction header ─────────────────────────────────────────
+    { "type": "SEGMENT_FIELD", "segment": "BSN", "position": 2, "field": "shipmentId"   },
+    { "type": "SEGMENT_FIELD", "segment": "BSN", "position": 3, "field": "shipmentDate" },
+    { "type": "SEGMENT_FIELD", "segment": "BSN", "position": 4, "field": "shipmentTime" },
+
+    // ── Shipment-level data: inside HL[S] → use LOOP_FIELD_NESTED ─────────
+    { "type": "LOOP_FIELD_NESTED",
+      "loopChain": [{ "trigger": "HL", "filterPosition": 3, "filterValue": "S" }],
+      "segment": "TD1", "position": 7, "field": "grossWeight"     },
+    { "type": "LOOP_FIELD_NESTED",
+      "loopChain": [{ "trigger": "HL", "filterPosition": 3, "filterValue": "S" }],
+      "segment": "TD1", "position": 8, "field": "weightUnit"      },
+    { "type": "LOOP_FIELD_NESTED",
+      "loopChain": [{ "trigger": "HL", "filterPosition": 3, "filterValue": "S" }],
+      "segment": "DTM", "position": 2, "field": "shipDate"        },
+
+    // ── Qualified REF inside HL[S]: add filterPosition + filterValue ───────
+    { "type": "LOOP_FIELD_NESTED",
+      "loopChain": [{ "trigger": "HL", "filterPosition": 3, "filterValue": "S" }],
+      "segment": "REF", "filterPosition": 1, "filterValue": "CN",
+      "position": 2, "field": "proNumber"                         },
+    { "type": "LOOP_FIELD_NESTED",
+      "loopChain": [{ "trigger": "HL", "filterPosition": 3, "filterValue": "S" }],
+      "segment": "REF", "filterPosition": 1, "filterValue": "BM",
+      "position": 2, "field": "billOfLading"                      },
+    { "type": "LOOP_FIELD_NESTED",
+      "loopChain": [{ "trigger": "HL", "filterPosition": 3, "filterValue": "S" }],
+      "segment": "REF", "filterPosition": 1, "filterValue": "OQ",
+      "position": 2, "field": "customerOrderRef"                  },
+
+    // ── Parties: N1 is NESTED inside HL[S] → use 2-step chain ─────────────
+    { "type": "LOOP_FIELD_NESTED",
+      "loopChain": [{ "trigger": "HL", "filterPosition": 3, "filterValue": "S" },
+                    { "trigger": "N1", "filterPosition": 1, "filterValue": "SF" }],
+      "segment": "N1", "position": 2, "field": "shipFrom.name"         },
+    { "type": "LOOP_FIELD_NESTED",
+      "loopChain": [{ "trigger": "HL", "filterPosition": 3, "filterValue": "S" },
+                    { "trigger": "N1", "filterPosition": 1, "filterValue": "SF" }],
+      "segment": "N1", "position": 4, "field": "shipFrom.locationCode" },
+    { "type": "LOOP_FIELD_NESTED",
+      "loopChain": [{ "trigger": "HL", "filterPosition": 3, "filterValue": "S" },
+                    { "trigger": "N1", "filterPosition": 1, "filterValue": "SF" }],
+      "segment": "N3", "position": 1, "field": "shipFrom.street"        },
+    { "type": "LOOP_FIELD_NESTED",
+      "loopChain": [{ "trigger": "HL", "filterPosition": 3, "filterValue": "S" },
+                    { "trigger": "N1", "filterPosition": 1, "filterValue": "SF" }],
+      "segment": "N4", "position": 1, "field": "shipFrom.city"          },
+    { "type": "LOOP_FIELD_NESTED",
+      "loopChain": [{ "trigger": "HL", "filterPosition": 3, "filterValue": "S" },
+                    { "trigger": "N1", "filterPosition": 1, "filterValue": "ST" }],
+      "segment": "N1", "position": 2, "field": "shipTo.name"            },
+    { "type": "LOOP_FIELD_NESTED",
+      "loopChain": [{ "trigger": "HL", "filterPosition": 3, "filterValue": "S" },
+                    { "trigger": "N1", "filterPosition": 1, "filterValue": "ST" }],
+      "segment": "N1", "position": 4, "field": "shipTo.storeNumber"     },
+    { "type": "LOOP_FIELD_NESTED",
+      "loopChain": [{ "trigger": "HL", "filterPosition": 3, "filterValue": "S" },
+                    { "trigger": "N1", "filterPosition": 1, "filterValue": "ST" }],
+      "segment": "N3", "position": 1, "field": "shipTo.street"          },
+    { "type": "LOOP_FIELD_NESTED",
+      "loopChain": [{ "trigger": "HL", "filterPosition": 3, "filterValue": "S" },
+                    { "trigger": "N1", "filterPosition": 1, "filterValue": "ST" }],
+      "segment": "N4", "position": 1, "field": "shipTo.city"            },
+
+    // ── Order level: HL[O] is a FLAT sibling → use plain LOOP_FIELD ───────
+    { "type": "LOOP_FIELD", "loopTrigger": "HL",
+      "filterSegment": "HL", "filterPosition": 3, "filterValue": "O",
+      "segment": "PRF", "position": 1, "field": "purchaseOrderNumber"  },
+    { "type": "LOOP_FIELD", "loopTrigger": "HL",
+      "filterSegment": "HL", "filterPosition": 3, "filterValue": "O",
+      "segment": "PRF", "position": 4, "field": "purchaseOrderDate"    },
+    { "type": "LOOP_FIELD", "loopTrigger": "HL",
+      "filterSegment": "HL", "filterPosition": 3, "filterValue": "O",
+      "segment": "REF", "position": 2, "field": "vendorRef"            },
+
+    // ── Line items: HL[I] is a FLAT sibling → LOOP_ARRAY with filter ──────
+    {
+      "type": "LOOP_ARRAY",
+      "loopTrigger": "HL",
+      "filterSegment": "HL", "filterPosition": 3, "filterValue": "I",
+      "arrayField": "lineItems",
+      "itemRules": [
+        { "segment": "LIN", "position": 3,  "field": "vendorItemNumber"   },
+        { "segment": "LIN", "position": 5,  "field": "internalItemNumber" },
+        { "segment": "LIN", "position": 7,  "field": "upcCode"            },
+        { "segment": "SN1", "position": 2,  "field": "shippedQuantity"    },
+        { "segment": "SN1", "position": 3,  "field": "unitOfMeasure"      },
+        { "segment": "PID", "position": 5,  "field": "productDescription" },
+        { "segment": "DTM", "position": 2,  "field": "expiryDate"         }
+      ]
+    }
+  ]
+}</pre>
+
+<h2>9.4 Expected Output</h2>
+<pre class="green">{
+  "shipmentId": "7007243-1",  "shipmentDate": "20260522",  "shipmentTime": "0430",
+  "grossWeight": "1356",  "weightUnit": "LB",  "shipDate": "20260522",
+  "proNumber": "1198629",  "billOfLading": "0003568",  "customerOrderRef": "7007243",
+  "shipFrom": { "name": "RJW MESQUITE WAREHOUSE D01", "locationCode": "D01",
+                "street": "2830 E. SCYENE RD", "city": "MESQUITE" },
+  "shipTo":   { "name": "WALMART", "storeNumber": "0078742033907",
+                "street": "2120 N. STEMMONS ST", "city": "SANGER" },
+  "purchaseOrderNumber": "3456TEST",  "purchaseOrderDate": "20240903",
+  "vendorRef": "430524921",
+  "lineItems": [
+    { "vendorItemNumber": "3541W", "internalItemNumber": "683696658",
+      "upcCode": "199874183541", "shippedQuantity": "6", "unitOfMeasure": "CA",
+      "productDescription": "Intensive Magnesium Relief 4oz", "expiryDate": "20900101" }
+  ]
+}</pre>
+<div class="page-break"></div>
+
+<!-- ══════════════ 10. FLAT FILE OUTPUT ══════════════ -->
+<h1>10. Flat File Output</h1>
+<p>Set <code>outputFormat: "FLAT_FILE"</code> and add <code>flatFileConfig</code> to produce a delimited text file.</p>
+<pre class="green">{
+  "outputFormat": "FLAT_FILE",
+  "rules": [ ... same rules as above ... ],
+  "flatFileConfig": {
+    "delimiter": "|",
+    "recordTypes": [
+      { "prefix": "ORDER", "fields": ["poNumber", "poDate", "currency"] },
+      { "prefix": "SHIPTO","fields": ["shipTo.name", "shipTo.street", "shipTo.city", "shipTo.zip"] },
+      { "prefix": "LINE",  "sourceArray": "lineItems",
+        "fields": ["lineNumber", "skuNumber", "quantityOrdered", "unitPrice", "productDescription"] }
+    ]
+  }
+}</pre>
+<p>Produces:</p>
+<pre class="orange">ORDER|1234|20260304|USD
+SHIPTO|Virginia Distribution Ctr 9004|112 The Vitamin Shoppe Way|ASHLAND|23005
+LINE|1|2713824|1080|13|16ct Watermelon Hydration
+LINE|2|2713832|1080|13|16ct Strawberry Kiwi Hydration
+LINE|3|2713857|1080|13|16ct Tropical Punch Hydration</pre>
+
+<table>
+  <tr><th>flatFileConfig field</th><th>Description</th></tr>
+  <tr><td><code>delimiter</code></td><td>Field separator. Default: <code>|</code>. Use <code>,</code> for CSV, <code>\t</code> for tab.</td></tr>
+  <tr><td><code>prefix</code></td><td>Record type code written as the first column.</td></tr>
+  <tr><td><code>fields</code></td><td>Ordered field names from businessJson. Dot notation supported.</td></tr>
+  <tr><td><code>sourceArray</code></td><td>If set, one record per item in this array. Omit for single-record types.</td></tr>
+</table>
+<div class="page-break"></div>
+
+<!-- ══════════════ 11. COMMON MISTAKES ══════════════ -->
+<h1>11. Common Mistakes</h1>
+<table>
+  <tr><th>Mistake</th><th>Symptom</th><th>Fix</th></tr>
+  <tr>
+    <td>Wrong position number</td>
+    <td>Field is empty or has wrong value</td>
+    <td>Parse the actual file and read positions from the parse output. Never assume from EDI specs.</td>
+  </tr>
+  <tr>
+    <td>Using SEGMENT_FIELD for a repeated segment</td>
+    <td>Always gets the first DTM/REF, misses the second</td>
+    <td>Use SEGMENT_FIELD_QUALIFIED with the qualifier value.</td>
+  </tr>
+  <tr>
+    <td>Wrong loopTrigger</td>
+    <td>Loop not found, field stays empty</td>
+    <td>loopTrigger must match the <code>triggerSegment</code> in the parse output (e.g. "N1" not "1000").</td>
+  </tr>
+  <tr>
+    <td>Missing filter on N1 loop</td>
+    <td>Always gets first N1 (ship-to) even when you want vendor</td>
+    <td>Add filterSegment + filterPosition + filterValue to narrow the loop.</td>
+  </tr>
+  <tr>
+    <td>Using LOOP_FIELD for data inside HL[S]</td>
+    <td>N1 party data not found</td>
+    <td>N1 is nested inside HL[S] in 856. Use LOOP_FIELD_NESTED with loopChain.</td>
+  </tr>
+  <tr>
+    <td>Using LOOP_FIELD_NESTED for HL[O] / HL[I] data</td>
+    <td>purchaseOrderNumber or lineItems missing</td>
+    <td>HL[O] and HL[I] are flat siblings in the schema. Use plain LOOP_FIELD or LOOP_ARRAY with a filter.</td>
+  </tr>
+  <tr>
+    <td>LOOP_ARRAY without filter in 856</td>
+    <td>Array contains unexpected items from HL[S], HL[O], HL[T] loops</td>
+    <td>Add filterSegment="HL" filterPosition=3 filterValue="I" to only include item-level loops.</td>
+  </tr>
+  <tr>
+    <td>Schema not loaded (loopsResolved = false)</td>
+    <td>No loops — all segments are flat, LOOP_FIELD returns nothing</td>
+    <td>Check GET /api/edi/schemas. Ensure the schema for the version/transaction is registered.</td>
+  </tr>
+</table>
+<div class="page-break"></div>
+
+<!-- ══════════════ 12. QUICK REFERENCE CARD ══════════════ -->
+<h1>12. Quick Reference Card</h1>
+
+<h2>All Rule Types</h2>
+<table>
+  <tr><th>Rule Type</th><th>Required Fields</th><th>Use When</th></tr>
+  <tr>
+    <td><code>SEGMENT_FIELD</code></td>
+    <td>type, segment, position, field</td>
+    <td>Segment is a direct child of the transaction (first occurrence)</td>
+  </tr>
+  <tr>
+    <td><code>SEGMENT_FIELD_QUALIFIED</code></td>
+    <td>type, segment, filterPosition, filterValue, position, field</td>
+    <td>Same segment repeats with different qualifier codes (DTM, REF)</td>
+  </tr>
+  <tr>
+    <td><code>LOOP_FIELD</code></td>
+    <td>type, loopTrigger, segment, position, field<br>+ optional: filterSegment, filterPosition, filterValue</td>
+    <td>Loop is a direct child of the transaction; want one specific occurrence</td>
+  </tr>
+  <tr>
+    <td><code>LOOP_ARRAY</code></td>
+    <td>type, loopTrigger, arrayField, itemRules[]<br>+ optional: filterSegment, filterPosition, filterValue</td>
+    <td>Loop repeats for every line item; want all occurrences as an array</td>
+  </tr>
+  <tr>
+    <td><code>LOOP_FIELD_NESTED</code></td>
+    <td>type, loopChain[], segment, position, field<br>+ optional: filterPosition, filterValue (for qualified segment)</td>
+    <td>Data is inside a loop that is nested inside another loop (e.g. N1 inside HL[S])</td>
+  </tr>
+  <tr>
+    <td><code>LOOP_ARRAY_NESTED</code></td>
+    <td>type, loopChain[], loopTrigger, arrayField, itemRules[]<br>+ optional: filterPosition, filterValue</td>
+    <td>Line items are physically nested several levels deep in the hierarchy</td>
+  </tr>
+</table>
+
+<h2>LoopChainEntry fields (used in LOOP_FIELD_NESTED and LOOP_ARRAY_NESTED)</h2>
+<table>
+  <tr><th>Field</th><th>Default if null</th><th>Description</th></tr>
+  <tr><td><code>trigger</code></td><td>—</td><td>Trigger segment tag of the loop to enter (required)</td></tr>
+  <tr><td><code>filterSegment</code></td><td>Same as trigger</td><td>Segment to filter on inside the loop</td></tr>
+  <tr><td><code>filterPosition</code></td><td>1</td><td>Element position for the filter</td></tr>
+  <tr><td><code>filterValue</code></td><td>null = first match</td><td>Expected value; null means take the first matching loop</td></tr>
+</table>
+
+<h2>API Endpoints</h2>
+<table>
+  <tr><th>Endpoint</th><th>Purpose</th></tr>
+  <tr><td><code>POST /api/edi/parse</code></td><td>Step 1: Parse EDI → use output to design rules</td></tr>
+  <tr><td><code>POST /api/edi/transform</code></td><td>Step 2: Parse + transform with rules (auto-detect)</td></tr>
+  <tr><td><code>POST /api/edi/transform/manual?version=004010&amp;transaction=850</code></td><td>Manual version/transaction override</td></tr>
+  <tr><td><code>GET  /api/edi/schemas</code></td><td>Verify schema is loaded (loopsResolved will be true)</td></tr>
+</table>
+
+<h2>Common Qualifier Codes</h2>
+<table>
+  <tr><th colspan="2">N1 Party Qualifiers (N101)</th><th colspan="2">DTM Date Qualifiers (DTM01)</th></tr>
+  <tr><td><code>ST</code> Ship-To</td><td><code>BT</code> Bill-To</td><td><code>001</code> Cancel After</td><td><code>002</code> Delivery Requested</td></tr>
+  <tr><td><code>SF</code> Ship-From</td><td><code>VN</code> Vendor</td><td><code>010</code> Requested Ship</td><td><code>036</code> Expiry Date</td></tr>
+  <tr><td><code>BY</code> Buying Party</td><td><code>SE</code> Selling Party</td><td><code>017</code> Do Not Ship Before</td><td><code>037</code> Ship Not Later Than</td></tr>
+  <tr><td><code>RE</code> Remit-To</td><td><code>II</code> Final Destination</td><td><code>011</code> Shipped</td><td><code>038</code> Ship No Earlier Than</td></tr>
+</table>
+
+<h2>856 HL Level Codes (HL03)</h2>
+<table>
+  <tr><th>Code</th><th>Level</th><th>Location in parse tree</th><th>Rule strategy</th></tr>
+  <tr><td><code>S</code></td><td>Shipment</td><td>Direct child of transaction</td><td>LOOP_FIELD_NESTED (for data inside it)</td></tr>
+  <tr><td><code>O</code></td><td>Order</td><td>Flat sibling of HL[S]</td><td>LOOP_FIELD with filterValue="O"</td></tr>
+  <tr><td><code>T</code></td><td>Tare/Pallet</td><td>Flat sibling</td><td>LOOP_FIELD with filterValue="T"</td></tr>
+  <tr><td><code>P</code></td><td>Pack/Carton</td><td>Flat sibling</td><td>LOOP_FIELD with filterValue="P"</td></tr>
+  <tr><td><code>I</code></td><td>Item</td><td>Flat sibling</td><td>LOOP_ARRAY with filterValue="I"</td></tr>
+</table>
+
+</body>
+</html>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://xlate.io/EDISchema/v4">
+
+    <transaction>
+        <sequence>
+            <segment type="AK1" minOccurs="1" maxOccurs="1"/>
+
+            <!-- Loop 2000 - Transaction Set Response -->
+            <loop code="2000" minOccurs="0" maxOccurs="999999">
+                <sequence>
+                    <segment type="AK2" minOccurs="0" maxOccurs="1"/>
+
+                    <!-- Loop 2100 - Segment/Element Error Notes -->
+                    <loop code="2100" minOccurs="0" maxOccurs="999999">
+                        <sequence>
+                            <segment type="AK3" minOccurs="1" maxOccurs="1"/>
+                            <segment type="AK4" minOccurs="0" maxOccurs="99"/>
+                        </sequence>
+                    </loop>
+
+                    <segment type="AK5" minOccurs="1" maxOccurs="1"/>
+                </sequence>
+            </loop>
+
+            <segment type="AK9" minOccurs="1" maxOccurs="1"/>
+
+        </sequence>
+    </transaction>
+
+    <include schemaLocation="../../segments/4010.xml"/>
+
+</schema>
